@@ -8,7 +8,7 @@ blink1.version(function(v)
 	console.log( "Found blink1 with version",	v);
 });
 
-blink1.fadeToRGB(10000, 255, 0, 0, function() 
+blink1.fadeToRGB(10000, 255, randomInt(0,255), randomInt(0,255), function() 
 {
 	blink1.setRGB(0,0,0);
 });
@@ -17,13 +17,15 @@ setInterval(function ()
 {
 	console.log("heartbeat");
 	
-	blink1.fadeToRGB(10000, 255, 0, 0, function() 
+	blink1.fadeToRGB(10000, 255, randomInt(0,255), randomInt(0,255), function() 
 	{
 		blink1.setRGB(0,0,0);
 	});
 }, 30000);
 
-
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
 
 // cleanup
 function exitHandler(options, err) 
