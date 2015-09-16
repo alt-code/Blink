@@ -52,28 +52,25 @@ function policeCar() {
 }
 
 Flashes(10, 'b');
-var c = 0;
+
 function Flashes(n, color) {
-	
+	var c = 0;	
 	var r = 0; // default
 	var g = 0; // default
 	var b = 0; // default
 	if (color == 'r'){ r = 255;}
-	else if (color == 'g'){ g = 255;}
-	else if (color == 'b'){ b = 255;}
-	else if (color == 'w'){ r = 255; b = 255;}
-	else { r = 255; g=255; b == 255;}
-	
-	
+	else if (color == 'g'){ g = 255; }
+	else if (color == 'b'){ b = 255; }
+	else if (color == 'w'){ r = 255; b = 255; }
+	else { r = 255; g=255; b == 255; }
+
 	while (c < n) {
-		//blink1.fadeToRGB(500,r,g,b, function () {blink1.fadeToRGB(500, 0, 0, 0, Flashes(n-1, color));});
+		//blink1.fadeToRGB(500,r,g,b, function () {blink1.fadeToRGB(500, 0, 0, 0, Flashes(n-1, color));});  //trying to make it recursive
 		blink1.setRGB(r, g, b, sleep(500));
-		
-		console.log("Pass")
-		blink1.setRGB(0, 0, 0, sleep(500));// setTimeout(function() { }, 500));		
+		blink1.setRGB(0, 0, 0, sleep(500));		
 		c++;
 	}
-	return ;
+	//return ;
 }
 
 
