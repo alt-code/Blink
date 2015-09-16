@@ -51,9 +51,16 @@ function policeCar() {
 	}, 100);
 }
 
-Flashes(3, 'g');
 
-function Flashes(n, color) {
+//Flashes(10, 500, 'b');
+SlowPulse(10, 'b');
+
+function SlowPulse (n, color) 
+{
+	Flashes(n, 5000, color);
+}
+
+function Flashes(n, interval, color) {
 	var c = 0;	
 	var r = 0; // default
 	var g = 0; // default
@@ -64,12 +71,15 @@ function Flashes(n, color) {
 	else if (color == 'y'){ r = 255; g = 255; }
 	else { r = 255; g=255; b == 255; }
 
-	while (c < n) {
+	/*while (c < n) {
 		//blink1.fadeToRGB(500,r,g,b, function () {blink1.fadeToRGB(500, 0, 0, 0, Flashes(n-1, color));});  //trying to make it recursive
 		blink1.setRGB(r, g, b, sleep(500));
 		blink1.setRGB(0, 0, 0, sleep(500));		
 		c++;
-	}
+	}*/
+	if( n == 0 )
+		return;
+	blink1.fadeToRGB(interval,r,g,b, function () {blink1.fadeToRGB(interval, 0, 0, 0, function(){Flashes(n-1, interval, color)});}); 
 	//return ;
 }
 
