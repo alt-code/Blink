@@ -16,6 +16,7 @@
     "ical": "^0.4.0",
     "moment": "^2.10.6",
     "node-blink1": "^0.1.6",
+    "onecolor": "^2.5.0",
     "underscore": "^1.8.3"
   }
 }
