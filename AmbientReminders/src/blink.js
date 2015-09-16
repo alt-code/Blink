@@ -51,7 +51,7 @@ function policeCar() {
 	}, 100);
 }
 
-Flashes(10, 'b');
+Flashes(3, 'g');
 
 function Flashes(n, color) {
 	var c = 0;	
@@ -61,7 +61,7 @@ function Flashes(n, color) {
 	if (color == 'r'){ r = 255;}
 	else if (color == 'g'){ g = 255; }
 	else if (color == 'b'){ b = 255; }
-	else if (color == 'w'){ r = 255; b = 255; }
+	else if (color == 'y'){ r = 255; g = 255; }
 	else { r = 255; g=255; b == 255; }
 
 	while (c < n) {
@@ -76,7 +76,7 @@ function Flashes(n, color) {
 
 
 
-function activateLinear(start, stop) {
+function activateLinear(start, end) {
 
 }
 
