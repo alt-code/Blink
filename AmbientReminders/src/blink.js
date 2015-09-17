@@ -1,34 +1,29 @@
 var Blink1 = require('node-blink1');
-
+var color = require('onecolor');
 
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
 blink1.version(function (v) {
 	console.log("Found blink1 with version", v);
 });
-/*
-blink1.fadeToRGB(10000, 255, randomInt(0,255), randomInt(0,255), function() 
-{
-	blink1.setRGB(0,0,0);
-});
-*/
+
 /*
 var i = 0;
 var j = 0;
 var k  = 0;
-setInterval(function () 
+setInterval(function ()
 {
 	console.log("heartbeat");
-	
-	blink1.fadeToRGB(10000, i, j, k, function() 
+	blink1.fadeToRGB(1000, i, j, k, function()
 	{
-		//blink1.setRGB(0,0,0);
+		blink1.fadeToRGB(100, 0,0,0);
 	});
 	if (i < 255){ i = i + 5}
 	else if (i == 255 && j < 255){ j += 5 }
 	else if (i == 255 && j == 255 && k < 255){ k += 5 }
 }, 100);
 */
+
 
 //policeCar();
 var r = 255;
@@ -51,49 +46,58 @@ function policeCar() {
 	}, 100);
 }
 
-
-//Flashes(10, 500, 'b');
-SlowPulse(10, 'b');
-
-function SlowPulse (n, color) 
-{
+//Flashes(10, 1000, "#ff0000");
+//SlowPulse(10, "#00ff00");
+//FastPulse(10, "#0000ff");
+function SlowPulse (n, color){
 	Flashes(n, 5000, color);
 }
 
+function FastPulse (n, color){
+	Flashes(n, 1000, color);
+}
+
+/**
+* TODO: pass a HSL color instead using onecolor
+*
+* @param n -> (int) Number of pulses
+* @param interval -> (int) Speed of pulses
+* @param color -> (String) String Hex
+**/
 function Flashes(n, interval, color) {
-	var c = 0;	
-	var r = 0; // default
-	var g = 0; // default
-	var b = 0; // default
-	if (color == 'r'){ r = 255;}
-	else if (color == 'g'){ g = 255; }
-	else if (color == 'b'){ b = 255; }
-	else if (color == 'y'){ r = 255; g = 255; }
-	else { r = 255; g=255; b == 255; }
+	var r = parseInt(color.substring(1,3), 16);
+	var g = parseInt(color.substring(3,5), 16);
+	var b = parseInt(color.substring(5,7), 16);
 
-	/*while (c < n) {
-		//blink1.fadeToRGB(500,r,g,b, function () {blink1.fadeToRGB(500, 0, 0, 0, Flashes(n-1, color));});  //trying to make it recursive
-		blink1.setRGB(r, g, b, sleep(500));
-		blink1.setRGB(0, 0, 0, sleep(500));		
-		c++;
-	}*/
-	if( n == 0 )
+	if(n == 0)
 		return;
-	blink1.fadeToRGB(interval,r,g,b, function () {blink1.fadeToRGB(interval, 0, 0, 0, function(){Flashes(n-1, interval, color)});}); 
-	//return ;
+
+	blink1.fadeToRGB(interval, r, g, b, function (){
+		 blink1.fadeToRGB(interval, 0, 0, 0, function(){
+			 Flashes(n-1, interval, color)
+		 });
+	});
 }
 
 
 
 
-function activateLinear(start, end) {
-
+function activate(start, end, rateOfChange) {
+	if (rateOfChange == "linear") { Linear(start, end); }
+	else if (rateOfChange == "log") { Log(start, end); }
+	else if (rateOfChange == "sinusoidal") { Sinusoidal(start, end); }
 }
 
+/**
+* TODO: Impleamanting 3 methods... (Linear, Log, Sinusoidal)
+**/
+function Linear(start, end){ }
+function Log(start, end){ }
+function Sinusoidal(start, end){ }
 
 
 function randomInt(low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+	return Math.floor(Math.random() * (high - low) + low);
 }
 
 // cleanup
@@ -119,14 +123,9 @@ process.on('SIGINT', exitHandler.bind(null, { exit: true }));
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
-
-
 function sleep(miliseconds) {
-           return function (){
-			   var currentTime = new Date().getTime();
-
-           		while (currentTime + miliseconds >= new Date().getTime()) {
-           		}
-		   }
-		   
-       }
+	return function (){
+		var currentTime = new Date().getTime();
+		while (currentTime + miliseconds >= new Date().getTime()) { }
+	}
+}
