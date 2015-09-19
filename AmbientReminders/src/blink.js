@@ -128,21 +128,21 @@ FastPulse(10, "#0000ff", 0.5);
  */
 function activate(interval, rateOfChange) {
     if (rateOfChange == "linear") {
-        Linear(start, end);
+        linear(interval);
     } else if (rateOfChange == "log") {
-        Log(start, end);
+        log(interval);
     } else if (rateOfChange == "sinusoidal") {
-        Sinusoidal(start, end);
+        sinusoidal(interval);
     }
 }
 
 
-// TODO: Impleamanting 3 methods... (Linear, Log, Sinusoidal)
-function Linear(interval) {}
+// TODO: Impleamanting 3 methods... (linear, log, sinusoidal)
+function linear(interval) {}
 
-function Log(interval) {}
+function log(interval) {}
 
-function Sinusoidal(interval) {}
+function sinusoidal(interval) {}
 
 
 function randomInt(low, high) {
