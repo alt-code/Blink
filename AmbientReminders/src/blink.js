@@ -6,7 +6,8 @@ var color = require('onecolor');
  * 
  * How I am doing it:
  * get RGB first because it's the easiest to know what color we get and 
- * then implicitly convert it to HSV and set value
+ * then implicitly convert it to HSV and set value.
+ * -> Can use "red(), green(), blue(), hue(), saturation(), lightness(), value(), alpha()" getters/setters
  *
  * var cc = new color.RGB(255, 0, 0).
  * value(0.5). // Implicit conversion to HSV
@@ -72,27 +73,30 @@ function policeCar() {
  * @param {int} n        number of pulses
  * @param {int} fadeMillis speed of pulses, ms
  * @param {String} color    Hex
- * @param {Number} value decimal indicating "Brightness" of Blink(1)
+ * @param {Number} value decimal indicating "Brightness" of Blink(1) 0-1
+ * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1 //not very useful? //less than 0.5 conflict with 'value'?
  */
-function Flashes(n, fadeMillis, color, value) {
-    //value's default
+function Flashes(n, fadeMillis, color, value, lightness) {
+    //default values
     value = typeof value !== 'undefined' ? value : 1;
+    lightness = typeof lightness !== 'undefined' ? lightness : 0.5;
 
-    var r = hexToR_G_B(HSVConverter(color, value))[0];
-    var g = hexToR_G_B(HSVConverter(color, value))[1];
-    var b = hexToR_G_B(HSVConverter(color, value))[2];
+    var r = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[0];
+    var g = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[1];
+    var b = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[2];
 
     if (n === 0) //base case
         return;
 
     blink1.fadeToRGB(fadeMillis, r, g, b, function() {
         blink1.fadeToRGB(fadeMillis, 0, 0, 0, function() {
-            Flashes(n - 1, fadeMillis, color, value);
+            Flashes(n - 1, fadeMillis, color, value, lightness);
         });
     });
 }
 //Flashes(10, 1000, "#ff0000"); //Flashes(10, 1000, "#ff0000", 0.3);
 //Flashes(10, 1000, "#ff0000", 0.3);
+//Flashes(10, 1000, "#0000ff", 0.3, 0.8);
 
 
 /**
@@ -100,12 +104,14 @@ function Flashes(n, fadeMillis, color, value) {
  * @param {int} n     number of pulses
  * @param {String} color Hex
  * @param {Number} value decimal indicating "Brightness of Blink(1)"
+ * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1
  */
-function SlowPulse(n, color, value) {
-    Flashes(n, 5000, color, value);
+function SlowPulse(n, color, value, lightness) {
+    Flashes(n, 5000, color, value, lightness);
 }
 //SlowPulse(5, "#00ff00"); //value = 1 by defalt
 //SlowPulse(5, "#00ff00", 0.5);
+//SlowPulse(5, "#00ff00", 1, 0.8);
 
 
 /**
@@ -113,12 +119,14 @@ function SlowPulse(n, color, value) {
  * @param {int} n     number of pulses
  * @param {String} color Hex
  * @param {Number} value decimal indicating "Brightness of Blink(1)"
+ * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1
  */
-function FastPulse(n, color, value) {
-    Flashes(n, 1000, color, value);
+function FastPulse(n, color, value, lightness) {
+    Flashes(n, 1000, color, value, lightness);
 }
 //FastPulse(10, "#0000ff"); //value = 1 by defalt
-FastPulse(10, "#0000ff", 0.5);
+//FastPulse(10, "#0000ff", 0.5);
+//FastPulse(5, "#0000ff", 1, 0.5);
 
 
 /**
@@ -189,14 +197,15 @@ function sleep(miliSeconds) {
 }
 
 /**
- * Convert RGB to HSV and set it's value
+ * Convert RGB to HSV/HSL and set it's value and lightness
  * @param {String} RGBHex RGB color hex
  * @param {Number} value  this is a decimal 0-1 indicating value of HSV color
+ * @param {Number} lightness this is a decimal 0-1 indicating lightness of HSL color / Better use 0.5-1
  * @return {String} HSV hex
  */
-function HSVConverter(RGBHex, value) {
-    var HSV = new color(RGBHex).value(value).hex();
-    return HSV;
+function HSV_HSL_Converter(RGBHex, value, lightness) {
+    var c = new color(RGBHex).value(value).lightness(lightness).hex();
+    return c;
 }
 
 /**
