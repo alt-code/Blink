@@ -17,6 +17,7 @@
     "moment": "^2.10.6",
     "node-blink1": "^0.1.6",
     "onecolor": "^2.5.0",
+    "promise": "^7.0.4",
     "underscore": "^1.8.3"
   }
 }
