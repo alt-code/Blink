@@ -2,18 +2,17 @@ var Blink1 = require('node-blink1');
 var color = require('onecolor');
 
 /**
- * colorone usage sample
+ * onecolor usage sample
  * 
  * How I am doing it:
  * get RGB first because it's the easiest to know what color we get and 
- * then implicitly convert it to HSV and set value.
+ * then implicitly convert it to HSL and set lightness.
  * -> Can use "red(), green(), blue(), hue(), saturation(), lightness(), value(), alpha()" getters/setters
  *
  * var cc = new color.RGB(255, 0, 0).
- * value(0.5). // Implicit conversion to HSV
+ * ligtness(0.5). // Implicit conversion to HSL
  * hex(); // "#800000"
  */
-
 
 
 // create blink(1) object without serial number, uses first device:
@@ -39,13 +38,14 @@ setInterval(function ()
 }, 100);
 */
 
-
-
-var r = 255;
-var b = 0;
-var rbbr = "rb";
-
+/**
+ * Simulating police car lights
+ */
 function policeCar() {
+    var r = 255;
+    var b = 0;
+    var rbbr = "rb";
+    var ledn = 1;
     setInterval(function() {
         //blink1.fadeToRGB(10, r, 0, b);
         blink1.setRGB(r, 0, b);
@@ -69,64 +69,59 @@ function policeCar() {
 
 /**
  * Fades color from #000000 to Hex color and back to #000000 for n times
- * Note: values less than 0.4 seem to be laggy with fadeToRGB -- better use > 0.5
  * @param {int} n        number of pulses
  * @param {int} fadeMillis speed of pulses, ms
  * @param {String} color    Hex
- * @param {Number} value decimal indicating "Brightness" of Blink(1) 0-1
- * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1 //not very useful? //less than 0.5 conflict with 'value'?
+ * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
  */
-function Flashes(n, fadeMillis, color, value, lightness) {
-    //default values
-    value = typeof value !== 'undefined' ? value : 1;
+function Flashes(n, fadeMillis, color, lightness) {
+    // default value
     lightness = typeof lightness !== 'undefined' ? lightness : 0.5;
 
-    var r = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[0];
-    var g = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[1];
-    var b = hexToR_G_B(HSV_HSL_Converter(color, value, lightness))[2];
+    var r = hexToR_G_B(HSL_converter(color, lightness))[0];
+    var g = hexToR_G_B(HSL_converter(color, lightness))[1];
+    var b = hexToR_G_B(HSL_converter(color, lightness))[2];
 
     if (n === 0) //base case
         return;
 
     blink1.fadeToRGB(fadeMillis, r, g, b, function() {
         blink1.fadeToRGB(fadeMillis, 0, 0, 0, function() {
-            Flashes(n - 1, fadeMillis, color, value, lightness);
+            Flashes(n - 1, fadeMillis, color, lightness);
         });
     });
 }
-//Flashes(10, 1000, "#ff0000"); //Flashes(10, 1000, "#ff0000", 0.3);
-//Flashes(10, 1000, "#ff0000", 0.3);
-//Flashes(10, 1000, "#0000ff", 0.3, 0.8);
+//Flashes(10, 1000, "#556B2F"); //lightness = 0.5 by defalt
+//Flashes(10, 1000, "#556B2F", 0.7);
+//Flashes(10, 1000, "#556B2F", 0.4);
 
 
 /**
  * One pulse every five seconds
  * @param {int} n     number of pulses
  * @param {String} color Hex
- * @param {Number} value decimal indicating "Brightness of Blink(1)"
- * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1
+ * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
  */
-function SlowPulse(n, color, value, lightness) {
-    Flashes(n, 5000, color, value, lightness);
+function SlowPulse(n, color, lightness) {
+    Flashes(n, 5000, color, lightness);
 }
-//SlowPulse(5, "#00ff00"); //value = 1 by defalt
-//SlowPulse(5, "#00ff00", 0.5);
-//SlowPulse(5, "#00ff00", 1, 0.8);
+//SlowPulse(5, "#00ff00"); //lightness = 0.5 by defalt
+//SlowPulse(5, "#00ff00", 0.7);
+//SlowPulse(5, "#00ff00", 0.4);
 
 
 /**
  * One pulse every second
  * @param {int} n     number of pulses
  * @param {String} color Hex
- * @param {Number} value decimal indicating "Brightness of Blink(1)"
- * @param {Number} lightness decimal indicating lightness/darkness of LED color use 0.5-1
+ * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
  */
-function FastPulse(n, color, value, lightness) {
-    Flashes(n, 1000, color, value, lightness);
+function FastPulse(n, color, lightness) {
+    Flashes(n, 1000, color, lightness);
 }
-//FastPulse(10, "#0000ff"); //value = 1 by defalt
-//FastPulse(10, "#0000ff", 0.5);
-//FastPulse(5, "#0000ff", 1, 0.5);
+//FastPulse(10, "#0000ff"); //lightness = 0.5 by defalt
+//FastPulse(10, "#0000ff", 0.7);
+//FastPulse(5, "#0000ff", 0.4);
 
 
 /**
@@ -145,14 +140,21 @@ function activate(interval, rateOfChange) {
 }
 
 
-// TODO: Impleamanting 3 methods... (linear, log, sinusoidal)
+// TODO:    1 - Add more patters
+//          2 - Rank patters
+//          3 - Implement 3 methods... (linear, log, sinusoidal)
 function linear(interval) {}
 
 function log(interval) {}
 
 function sinusoidal(interval) {}
 
-
+/**
+ * Generate a random Number between low and high
+ * @param  {Number} low
+ * @param  {Number} high
+ * @return {Number}      A random Number between low and high
+ */
 function randomInt(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
 }
@@ -197,14 +199,13 @@ function sleep(miliSeconds) {
 }
 
 /**
- * Convert RGB to HSV/HSL and set it's value and lightness
+ * Convert RGB to HSL and set it's lightness
  * @param {String} RGBHex RGB color hex
- * @param {Number} value  this is a decimal 0-1 indicating value of HSV color
- * @param {Number} lightness this is a decimal 0-1 indicating lightness of HSL color / Better use 0.5-1
- * @return {String} HSV hex
+ * @param {Number} lightness this is a decimal 0-1 indicating lightness of HSL color / 1 -> white regardless of color
+ * @return {String} HSL color hex
  */
-function HSV_HSL_Converter(RGBHex, value, lightness) {
-    var c = new color(RGBHex).value(value).lightness(lightness).hex();
+function HSL_converter(RGBHex, lightness) {
+    var c = new color(RGBHex).lightness(lightness).hex();
     return c;
 }
 
