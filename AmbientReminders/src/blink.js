@@ -14,6 +14,14 @@ var color = require('onecolor');
  * hex(); // "#800000"
  */
 
+var palette = {
+    "cadmiumlemon": "#FFE303",
+    "darkolivegreen": "#556B2F",
+    "cinnamon": "#7B3F00",
+    "steelblue1": "#63B8FF",
+    "skyblue1": "#87CEFF"
+};
+
 
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
@@ -72,15 +80,15 @@ function policeCar() {
  * @param {int} n        number of pulses
  * @param {int} fadeMillis speed of pulses, ms
  * @param {String} color    Hex
- * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
+ * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
  */
 function Flashes(n, fadeMillis, color, lightness) {
     // default value
-    lightness = typeof lightness !== 'undefined' ? lightness : 0.5;
+    lightness = typeof lightness !== 'undefined' ? lightness : 1;
 
-    var r = hexToR_G_B(HSL_converter(color, lightness))[0];
-    var g = hexToR_G_B(HSL_converter(color, lightness))[1];
-    var b = hexToR_G_B(HSL_converter(color, lightness))[2];
+    var r = hexToR_G_B(Lightnen(color, lightness))[0];
+    var g = hexToR_G_B(Lightnen(color, lightness))[1];
+    var b = hexToR_G_B(Lightnen(color, lightness))[2];
 
     if (n === 0) //base case
         return;
@@ -91,37 +99,37 @@ function Flashes(n, fadeMillis, color, lightness) {
         });
     });
 }
-//Flashes(10, 1000, "#556B2F"); //lightness = 0.5 by defalt
-//Flashes(10, 1000, "#556B2F", 0.7);
-//Flashes(10, 1000, "#556B2F", 0.4);
+//Flashes(10, 1000, palette.skyblue1); //lightness = 1 by defalt
+//Flashes(10, 1000, palette.skyblue1, 0.5);
+//Flashes(10, 1000, palette.skyblue1, 1);
 
 
 /**
  * One pulse every five seconds
  * @param {int} n     number of pulses
  * @param {String} color Hex
- * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
+ * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
  */
 function SlowPulse(n, color, lightness) {
     Flashes(n, 5000, color, lightness);
 }
-//SlowPulse(5, "#00ff00"); //lightness = 0.5 by defalt
-//SlowPulse(5, "#00ff00", 0.7);
-//SlowPulse(5, "#00ff00", 0.4);
+//SlowPulse(5, palette.steelblue1); //lightness = 1 by defalt
+//SlowPulse(5, palette.steelblue1, 0.5);
+//SlowPulse(5, palette.steelblue1, 1);
 
 
 /**
  * One pulse every second
  * @param {int} n     number of pulses
  * @param {String} color Hex
- * @param {Number} lightness decimal indicating lightness of HSL color - use 0-1 - NOTE: 1 -> White regardless of color
+ * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
  */
 function FastPulse(n, color, lightness) {
     Flashes(n, 1000, color, lightness);
 }
-//FastPulse(10, "#0000ff"); //lightness = 0.5 by defalt
-//FastPulse(10, "#0000ff", 0.7);
-//FastPulse(5, "#0000ff", 0.4);
+//FastPulse(10, palette.cadmiumlemon); //lightness = 1 by defalt
+//FastPulse(10, palette.cadmiumlemon, 0.5);
+//FastPulse(5, palette.cadmiumlemon, 1);
 
 
 /**
@@ -140,7 +148,7 @@ function activate(interval, rateOfChange) {
 }
 
 
-// TODO:    1 - Add more patters
+// TODO:    1 - A̶d̶d̶ ̶m̶o̶r̶e̶ ̶p̶a̶t̶t̶e̶r̶s̶
 //          2 - Rank patters
 //          3 - Implement 3 methods... (linear, log, sinusoidal)
 function linear(interval) {}
@@ -187,8 +195,9 @@ process.on('uncaughtException', exitHandler.bind(null, {
     exit: true
 }));
 
+
 /**
- * Pause the for miliSeconds
+ * Pause the script for miliSeconds
  * @param  {Number} miliSeconds length of pause
  */
 function sleep(miliSeconds) {
@@ -198,16 +207,6 @@ function sleep(miliSeconds) {
     }
 }
 
-/**
- * Convert RGB to HSL and set it's lightness
- * @param {String} RGBHex RGB color hex
- * @param {Number} lightness this is a decimal 0-1 indicating lightness of HSL color / 1 -> white regardless of color
- * @return {String} HSL color hex
- */
-function HSL_converter(RGBHex, lightness) {
-    var c = new color(RGBHex).lightness(lightness).hex();
-    return c;
-}
 
 /**
  * Assign Red, Green, Blue of a hex String to [R, G, B]
@@ -219,4 +218,17 @@ function hexToR_G_B(hex) {
         parseInt(hex.substring(3, 5), 16),
         parseInt(hex.substring(5, 7), 16)
     ];
+}
+
+
+/**
+ * Reduce RGBHex's lightness to this percentage - use 0 (off)-1
+ * @param {String} RGBHex  hex color (RGB)
+ * @param {Number} percent reducing lightness of color to this percentage
+ * @return {String} color hex
+ */
+function Lightnen(RGBHex, percent) {
+    var L = new color(RGBHex).lightness();
+    var c = new color(RGBHex).lightness(L * percent).hex();
+    return c;
 }
