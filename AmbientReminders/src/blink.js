@@ -81,8 +81,9 @@ function policeCar() {
  * @param {int} fadeMillis speed of pulses, ms
  * @param {String} color    Hex
  * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
+ * @param {Number} ledn choose led number [optional]
  */
-function Flashes(n, fadeMillis, color, lightness) {
+function Flashes(n, fadeMillis, color, lightness, ledn) {
     // default value
     lightness = typeof lightness !== 'undefined' ? lightness : 1;
 
@@ -93,15 +94,23 @@ function Flashes(n, fadeMillis, color, lightness) {
     if (n === 0) //base case
         return;
 
-    blink1.fadeToRGB(fadeMillis, r, g, b, function() {
-        blink1.fadeToRGB(fadeMillis, 0, 0, 0, function() {
-            Flashes(n - 1, fadeMillis, color, lightness);
+    blink1.fadeToRGB(fadeMillis, r, g, b, ledn, function() {
+        blink1.fadeToRGB(fadeMillis, 0, 0, 0, ledn, function() {
+            Flashes(n - 1, fadeMillis, color, lightness, ledn);
         });
     });
+
+    //Old code:
+    // blink1.fadeToRGB(fadeMillis, r, g, b, function() {
+    //     blink1.fadeToRGB(fadeMillis, 0, 0, 0, function() {
+    //         Flashes(n - 1, fadeMillis, color, lightness, ledn);
+    //     });
+    // }, ledn);
 }
 //Flashes(10, 1000, palette.skyblue1); //lightness = 1 by defalt
 //Flashes(10, 1000, palette.skyblue1, 0.5);
-//Flashes(10, 1000, palette.skyblue1, 1);
+//Flashes(10, 1000, palette.skyblue1, 1); //still can call Flashes without ledn
+//Flashes(10, 1000, palette.skyblue1, 1, 2);
 
 
 /**
@@ -109,13 +118,15 @@ function Flashes(n, fadeMillis, color, lightness) {
  * @param {int} n     number of pulses
  * @param {String} color Hex
  * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
+ * @param {Number} ledn choose led number [optional]
  */
-function SlowPulse(n, color, lightness) {
-    Flashes(n, 5000, color, lightness);
+function SlowPulse(n, color, lightness, ledn) {
+    Flashes(n, 5000, color, lightness, ledn);
 }
 //SlowPulse(5, palette.steelblue1); //lightness = 1 by defalt
 //SlowPulse(5, palette.steelblue1, 0.5);
 //SlowPulse(5, palette.steelblue1, 1);
+//SlowPulse(5, palette.steelblue1, 1, 2);
 
 
 /**
@@ -123,13 +134,15 @@ function SlowPulse(n, color, lightness) {
  * @param {int} n     number of pulses
  * @param {String} color Hex
  * @param {Number} lightness color's lightness will be this percentage of initial lightness - use 0 (off)-1
+ * @param {Number} ledn choose led number [optional]
  */
-function FastPulse(n, color, lightness) {
-    Flashes(n, 1000, color, lightness);
+function FastPulse(n, color, lightness, ledn) {
+    Flashes(n, 1000, color, lightness, ledn);
 }
 //FastPulse(10, palette.cadmiumlemon); //lightness = 1 by defalt
 //FastPulse(10, palette.cadmiumlemon, 0.5);
 //FastPulse(5, palette.cadmiumlemon, 1);
+//FastPulse(5, palette.cadmiumlemon, 1, 2);
 
 
 /**
