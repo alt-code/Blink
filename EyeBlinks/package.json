@@ -1,0 +1,16 @@
+{
+  "name": "eyeblinks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blinks.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "node-blink1": "^0.2.1",
+    "onecolor": "^2.5.0",
+    "underscore": "^1.8.3"
+  }
+}

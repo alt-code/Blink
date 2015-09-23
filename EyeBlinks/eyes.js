@@ -1,10 +1,15 @@
+var blink = require('./blink.js')
+
+blink.policeCar();
+
+
+/*
 var s = require('net').Socket();
 s.bufferSize = 4096;
 s.connect(4242, '127.0.0.1',
 function()
 {
 	console.log("Connected");
-	
 
 
 	//s.write('<SET ID="ENABLE_SEND_CURSOR" STATE="1" />\r\n');
@@ -47,3 +52,4 @@ s.on('close', function ()
 {
 	console.log("closed");
 });
+*/
