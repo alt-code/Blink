@@ -1,9 +1,10 @@
 var blink = require('./blink.js')
+var xml2js = require('xml2js');
+var parser = new xml2js.Parser({trim: true});
+//blink.policeCar();
 
-blink.policeCar();
 
 
-/*
 var s = require('net').Socket();
 s.bufferSize = 4096;
 s.connect(4242, '127.0.0.1',
@@ -38,8 +39,12 @@ function()
 });
 
 s.on('data', function(d){
-	console.log(s.bytesRead);
-    console.log(d.toString());
+	//console.log(s.bytesRead);
+
+    //console.log(d.toString());
+	parser.parseString(d, function(err, data) {
+		console.log(data.REC.$.LPV);
+	})
 
 });
 
@@ -48,8 +53,7 @@ s.on('error', function(error){
 });
 
 
-s.on('close', function () 
+s.on('close', function ()
 {
 	console.log("closed");
 });
-*/
