@@ -1,6 +1,7 @@
 var Blink1 = require('node-blink1');
 var color = require('onecolor');
 var Promise = require('promise');
+var schedule = require('node-schedule');
 
 /**
  * onecolor usage sample
@@ -20,7 +21,18 @@ var palette = {
     "darkolivegreen": "#556B2F",
     "cinnamon": "#7B3F00",
     "steelblue1": "#63B8FF",
-    "skyblue1": "#87CEFF"
+    "skyblue1": "#87CEFF",
+    "red": "#FF0000",
+    "pink": "#FF00FF",
+    "purple": '#C300C3',
+    "cyan": "#00FFFF",
+    "blue": "#0000FF",
+    "light_blue": "#80D8FF",
+    "green": "#00FF00",
+    "yellow": "#FFEB3B",
+    "amber": "#FFC107",
+    "orange": "#FF9800",
+    "deep_orange": "#FF3D00"
 };
 
 
@@ -96,7 +108,12 @@ function Flashes(n, fadeMillis, color, lightness, ledn) {
 //Flashes(10, 1000, palette.skyblue1, 1); //still can call Flashes without ledn
 //Flashes(10, 1000, palette.skyblue1, 1, 2);
 
-
+var date = new Date(2015, 9, 1, 12, 6, 0);
+console.log(date);
+schedule.scheduleJob(date, function(){
+    //Flashes(10, 1000, palette.skyblue1);
+});
+FastPulse(3, palette.pink);
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -131,8 +148,8 @@ function Flashes2(n, fadeMillis, color, lightness, ledn) {
     }
 }
 
-Flashes2(3, 500, palette.skyblue1);
-Flashes2(3, 500, palette.cadmiumlemon); //??
+//Flashes2(3, 500, palette.skyblue1);
+//Flashes2(3, 500, palette.cadmiumlemon); //??
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
