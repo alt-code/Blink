@@ -1,12 +1,11 @@
 var Blink1 = require('node-blink1');
 var color = require('onecolor');
+var moment = require('moment');
+var schedule = require('node-schedule');
 
 /**
- * onecolor usage sample
- * 
- * How I am doing it:
- * get RGB first because it's the easiest to know what color we get and 
- * then implicitly convert it to HSL and set lightness.
+ * onecolor usage example:
+ * get RGB hex and then implicitly convert it to HSL and set lightness.
  * -> Can use "red(), green(), blue(), hue(), saturation(), lightness(), value(), alpha()" getters/setters
  *
  * var cc = new color.RGB(255, 0, 0).
@@ -19,32 +18,24 @@ var palette = {
     "darkolivegreen": "#556B2F",
     "cinnamon": "#7B3F00",
     "steelblue1": "#63B8FF",
-    "skyblue1": "#87CEFF"
+    "skyblue1": "#87CEFF",
+    "red": "#FF0000",
+    "pink": "#FF00FF",
+    "purple": '#C300C3',
+    "cyan": "#00FFFF",
+    "blue": "#0000FF",
+    "light_blue": "#80D8FF",
+    "green": "#00FF00",
+    "yellow": "#FFEB3B",
+    "amber": "#FFC107",
+    "orange": "#FF9800",
+    "deep_orange": "#FF3D00"
 };
 
 
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
-blink1.version(function(v) {
-    console.log("Found blink1 with version", v);
-});
-
-/*
-var i = 0;
-var j = 0;
-var k  = 0;
-setInterval(function ()
-{
-    console.log("heartbeat");
-    blink1.fadeToRGB(1000, i, j, k, function()
-    {
-        blink1.fadeToRGB(100, 0,0,0);
-    });
-    if (i < 255){ i = i + 5}
-    else if (i == 255 && j < 255){ j += 5 }
-    else if (i == 255 && j == 255 && k < 255){ k += 5 }
-}, 100);
-*/
+blink1.version(function (v) { console.log("Found blink1 with version", v); });
 
 /**
  * Simulating police car lights
@@ -53,8 +44,7 @@ function policeCar() {
     var r = 255;
     var b = 0;
     var rbbr = "rb";
-    var ledn = 1;
-    setInterval(function() {
+    setInterval(function () {
         //blink1.fadeToRGB(10, r, 0, b);
         blink1.setRGB(r, 0, b);
         if (rbbr === "rb") {
@@ -94,8 +84,8 @@ function Flashes(n, fadeMillis, color, lightness, ledn) {
     if (n === 0) //base case
         return;
 
-    blink1.fadeToRGB(fadeMillis, r, g, b, ledn, function() {
-        blink1.fadeToRGB(fadeMillis, 0, 0, 0, ledn, function() {
+    blink1.fadeToRGB(fadeMillis, r, g, b, ledn, function () {
+        blink1.fadeToRGB(fadeMillis, 0, 0, 0, ledn, function () {
             Flashes(n - 1, fadeMillis, color, lightness, ledn);
         });
     });
@@ -146,31 +136,6 @@ function FastPulse(n, color, lightness, ledn) {
 
 
 /**
- * Activate Blink(1) for the time interval and with the chosen rate of change
- * @param  {int} interval     interval in minutes
- * @param  {String} rateOfChange "linear", "log", "sinusoidal"
- */
-function activate(interval, rateOfChange) {
-    if (rateOfChange == "linear") {
-        linear(interval);
-    } else if (rateOfChange == "log") {
-        log(interval);
-    } else if (rateOfChange == "sinusoidal") {
-        sinusoidal(interval);
-    }
-}
-
-
-// TODO:    1 - A̶d̶d̶ ̶m̶o̶r̶e̶ ̶p̶a̶t̶t̶e̶r̶s̶
-//          2 - Rank patters
-//          3 - Implement 3 methods... (linear, log, sinusoidal)
-function linear(interval) {}
-
-function log(interval) {}
-
-function sinusoidal(interval) {}
-
-/**
  * Generate a random Number between low and high
  * @param  {Number} low
  * @param  {Number} high
@@ -187,7 +152,7 @@ function exitHandler(options, err) {
         process.exit();
     } else {
         console.log("closing");
-        blink1.setRGB(0, 0, 0, function() {
+        blink1.setRGB(0, 0, 0, function () {
             process.exit();
         });
     }
@@ -214,9 +179,9 @@ process.on('uncaughtException', exitHandler.bind(null, {
  * @param  {Number} miliSeconds length of pause
  */
 function sleep(miliSeconds) {
-    return function() {
+    return function () {
         var currentTime = new Date().getTime();
-        while (currentTime + miliSeconds >= new Date().getTime()) {}
+        while (currentTime + miliSeconds >= new Date().getTime()) { }
     }
 }
 
@@ -245,3 +210,71 @@ function Lightnen(RGBHex, percent) {
     var c = new color(RGBHex).lightness(L * percent).hex();
     return c;
 }
+
+
+//******************************** SCHEDULING **********************************↓
+
+// TODO:    1 - A̶d̶d̶ ̶m̶o̶r̶e̶ ̶p̶a̶t̶t̶e̶r̶s̶
+//          2 - Rank patters
+//          3 - Implement 4 methods... (exponential, linear, log, sinusoidal)
+
+
+/**
+ * Activate Blink(1) for the time interval and with the chosen rate of change
+ * @param  {int} interval     interval in seconds(for now - testing)
+ * @param  {String} rateOfChange "exponential", "linear", "log", "sinusoidal"
+ */
+function activate(interval, rateOfChange) {
+    if (rateOfChange == "linear") {
+        linear(interval);
+    } else if (rateOfChange == "log") {
+        log(interval);
+    } else if (rateOfChange == "sinusoidal") {
+        sinusoidal(interval);
+    } else if (rateOfChange === "exponential") {
+        exponential(interval);
+    }
+}
+activate(100, "exponential")
+
+
+function exponential(interval) {
+    var ledn = 1;
+    var exp = 1.1;
+    while (Math.floor(exp) < interval) {
+        var now = moment();
+        now.add(interval - Math.floor(exp), 's');
+        schedule.scheduleJob(now.toDate(), function () {
+            if (ledn === 1)
+                ledn = 2;
+            else
+                ledn = 1;
+            Flashes(1, 500, palette.red, 1, ledn);
+        });
+        exp *= 1.1;
+        console.log("Pulse at: " + now.toDate());
+    }
+}
+
+
+
+//--------->  Recursive version any better useful for future?  <---------  
+
+// function exponential(interval, int) {
+//     var now = moment();
+//     schedule.scheduleJob(now.add(100-interval, 's').toDate(), function () {
+//         Flashes(1, 500, palette.red);
+//     });
+//     if (interval < 10)
+//         return
+//     interval = interval - (interval / 15);
+//     console.log(now.toDate());
+//     exponential(interval);
+// }
+
+
+function linear(interval) { }
+
+function log(interval) { }
+
+function sinusoidal(interval) { }
