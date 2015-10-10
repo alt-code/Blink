@@ -62,7 +62,7 @@ function policeCar() {
         }
     }, 100);
 }
-//policeCar();
+// policeCar();
 
 
 /**
@@ -116,7 +116,7 @@ function SlowPulse(n, color, lightness, ledn) {
 //SlowPulse(5, palette.steelblue1); //lightness = 1 by defalt
 //SlowPulse(5, palette.steelblue1, 0.5);
 //SlowPulse(5, palette.steelblue1, 1);
-//SlowPulse(5, palette.steelblue1, 1, 2);
+// SlowPulse(5, palette.steelblue1, 1);
 
 
 /**
@@ -132,7 +132,7 @@ function FastPulse(n, color, lightness, ledn) {
 //FastPulse(10, palette.cadmiumlemon); //lightness = 1 by defalt
 //FastPulse(10, palette.cadmiumlemon, 0.5);
 //FastPulse(5, palette.cadmiumlemon, 1);
-//FastPulse(5, palette.cadmiumlemon, 1, 2);
+// FastPulse(5, palette.cadmiumlemon, 1, 2);
 
 
 /**
@@ -235,7 +235,7 @@ function activate(interval, rateOfChange) {
         exponential(interval);
     }
 }
-activate(100, "exponential")
+// activate(20, "exponential")
 
 
 function exponential(interval) {
@@ -249,11 +249,12 @@ function exponential(interval) {
                 ledn = 2;
             else
                 ledn = 1;
-            Flashes(1, 500, palette.red, 1, ledn);
+            Flashes(2, 200, palette.blue, 1, ledn);
         });
         exp *= 1.1;
         console.log("Pulse at: " + now.toDate());
     }
+    // policeCar();
 }
 
 
@@ -273,7 +274,21 @@ function exponential(interval) {
 // }
 
 
-function linear(interval) { }
+function linear(interval) {
+    var l = 20;
+    var n = Math.floor(interval / l);
+    var now = moment();
+    Flashes(2, 500, palette.green, 1);
+    for (var index = 0; index < n; index++) {
+        schedule.scheduleJob(now.add(l, 's').toDate(), function () {
+            Flashes(1, 500, palette.blue, 1);
+            console.log("Hi!");
+        });
+        console.log("Pulse at: " + now.toDate());
+    }
+}
+
+linear(600);
 
 function log(interval) { }
 
