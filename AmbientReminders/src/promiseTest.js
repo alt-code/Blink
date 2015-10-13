@@ -34,6 +34,21 @@ var fadeToRGB = function(fadeMillis, r, g, b)
     });
 };
 
+blink1.fadeToRGB(1000, 255, 0, 0, 0, function (t) 
+{
+    setTimeout(function(){
+        blink1.fadeToRGB(1000, 255, 0, 0, 0, function () 
+        {
+            blink1.fadeToRGB(1000, 255, 0, 0, 0, function () 
+            {
+
+            });        
+        });
+    }, 500)
+    // body...
+});
+
+
 //http://www.december.com/html/spec/color3.html
 var palette =
 {
@@ -51,10 +66,12 @@ var r = hexToR_G_B(HSVConverter(clr, value))[0];
 var g = hexToR_G_B(HSVConverter(clr, value))[1];
 var b = hexToR_G_B(HSVConverter(clr, value))[2];
 
-fadeToRGB(1000,r,g,b).then(function() 
+fadeToRGB(1000,r,g,b)
+.then(function() 
 {
     return fadeToRGB(1000,0,0,0);
 })
+.delay(500)
 .then(function () 
 {
     return fadeToRGB(1000,0x7F,0x33,0x55);
