@@ -240,7 +240,7 @@ activate(20, "exponential")
 
 
 /**
- * exponentially activates during the given interval
+ * Exponentially activates during the given interval
  * @param  {int} interval     interval in seconds(for now - because testing)
  */
 function exponential(interval) {
@@ -265,25 +265,6 @@ function exponential(interval) {
     }
 }
 
-/**
- * Finds out the needed color for exponential function
- * 
- * @param {Number} double
- * @param {int} interval length in seconds
- * @return {hex} color needed for linear function
- */
-function getColorExp(exp, interval, count) {
-    var n = Math.log(interval) / Math.log(exp);
-    if (count < n / 3) {
-        return palette.green;
-    }
-    else if (count < 2 * n / 3) {
-        return palette.yellow;
-    }
-    else {
-        return palette.red;
-    }
-}
 
 function linear() {
     var later = require("later");
@@ -314,8 +295,33 @@ function log(interval) { }
 function sinusoidal(interval) { }
 
 
+//******************************** HELPER FUNCTIONS **********************************↓
+
 /**
- * Finds out the needed color for linear function
+ * Finds out the needed color for exponential function, first 33.33% of the interval Green,
+ *  second 33.33% of the interval Yellow, last 33.33% of the interval Red
+ * 
+ * @param {Number} double
+ * @param {int} interval length in seconds
+ * @return {hex} color needed for linear function
+ */
+function getColorExp(exp, interval, count) {
+    var n = Math.log(interval) / Math.log(exp);
+    if (count < n / 3) {
+        return palette.green;
+    }
+    else if (count < 2 * n / 3) {
+        return palette.yellow;
+    }
+    else {
+        return palette.red;
+    }
+}
+
+
+/**
+ * Finds out the needed color for linear function, first 33.33% of the interval Green,
+ *  second 33.33% of the interval Yellow, last 33.33%  of the interval Red
  * 
  * @param {moment} start a moment object
  * @param {moment} now a moment object
