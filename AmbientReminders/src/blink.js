@@ -2,6 +2,7 @@ var Blink1 = require('node-blink1');
 var color = require('onecolor');
 var moment = require('moment');
 var schedule = require('node-schedule');
+var later = require("later");
 
 /**
  * onecolor usage example:
@@ -235,61 +236,100 @@ function activate(interval, rateOfChange) {
         exponential(interval);
     }
 }
-// activate(20, "exponential")
+activate(20, "exponential")
 
 
+/**
+ * exponentially activates during the given interval
+ * @param  {int} interval     interval in seconds(for now - because testing)
+ */
 function exponential(interval) {
-    var ledn = 1;
+    var start = moment();
     var exp = 1.1;
+    var count = Math.floor(Math.log(interval) / Math.log(exp));
+    console.log(count);
+
     while (Math.floor(exp) < interval) {
         var now = moment();
         now.add(interval - Math.floor(exp), 's');
+        count -= 1;
+
         schedule.scheduleJob(now.toDate(), function () {
-            if (ledn === 1)
-                ledn = 2;
-            else
-                ledn = 1;
-            Flashes(2, 200, palette.blue, 1, ledn);
+            Flashes(2, 200, getColorLinear(start, moment(), interval), 1);
+            // Flashes(2, 200, getColorExp(1.1, interval, count), 1);
+            console.log("Hi there!" + " Color: " + getColorLinear(start, moment(), interval));
         });
+
         exp *= 1.1;
-        console.log("Pulse at: " + now.toDate());
+        console.log("Pulse at: " + now.toDate() + " Color: " + getColorLinear(start, now, interval));
     }
-    // policeCar();
 }
 
+/**
+ * Finds out the needed color for exponential function
+ * 
+ * @param {Number} double
+ * @param {int} interval length in seconds
+ * @return {hex} color needed for linear function
+ */
+function getColorExp(exp, interval, count) {
+    var n = Math.log(interval) / Math.log(exp);
+    if (count < n / 3) {
+        return palette.green;
+    }
+    else if (count < 2 * n / 3) {
+        return palette.yellow;
+    }
+    else {
+        return palette.red;
+    }
+}
 
+function linear() {
+    var later = require("later");
+    var sched = later.parse.recur().every(10).second();
+    later.setTimeout(function () {
+        console.log(new Date());
+    }, sched);
+}
 
-//--------->  Recursive version any better useful for future?  <---------  
-
-// function exponential(interval, int) {
+// function linear(interval) {
+//     var l = 20;
+//     var n = Math.floor(interval / l);
 //     var now = moment();
-//     schedule.scheduleJob(now.add(100-interval, 's').toDate(), function () {
-//         Flashes(1, 500, palette.red);
-//     });
-//     if (interval < 10)
-//         return
-//     interval = interval - (interval / 15);
-//     console.log(now.toDate());
-//     exponential(interval);
+//     Flashes(2, 500, palette.green, 1);
+//     for (var index = 0; index < n; index++) {
+//         schedule.scheduleJob(now.add(l, 's').toDate(), function () {
+//             Flashes(1, 500, palette.blue, 1);
+//             console.log("Hi!");
+//         });
+//         console.log("Pulse at: " + now.toDate());
+//     }
 // }
 
-
-function linear(interval) {
-    var l = 20;
-    var n = Math.floor(interval / l);
-    var now = moment();
-    Flashes(2, 500, palette.green, 1);
-    for (var index = 0; index < n; index++) {
-        schedule.scheduleJob(now.add(l, 's').toDate(), function () {
-            Flashes(1, 500, palette.blue, 1);
-            console.log("Hi!");
-        });
-        console.log("Pulse at: " + now.toDate());
-    }
-}
-
-linear(600);
+// linear();
 
 function log(interval) { }
 
 function sinusoidal(interval) { }
+
+
+/**
+ * Finds out the needed color for linear function
+ * 
+ * @param {moment} start a moment object
+ * @param {moment} now a moment object
+ * @param {int} interval length in seconds
+ * @return {hex} color needed for linear function
+ */
+function getColorLinear(start, now, interval) {
+    if (now.diff(start, 'seconds') < interval / 3) {
+        return palette.green;
+    }
+    else if (now.diff(start, 'seconds') < 2 * interval / 3) {
+        return palette.yellow;
+    }
+    else {
+        return palette.red;
+    }
+}

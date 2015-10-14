@@ -19,7 +19,8 @@
     "onecolor": "^2.5.0",
     "promise": "^7.0.4",
     "underscore": "^1.8.3",
-    "node-schedule": "^0.2.9"
+    "node-schedule": "^0.2.9",
+    "later": "^1.2.0"
   },
   "engines" : { "node" : ">=0.11.6" }
 }
