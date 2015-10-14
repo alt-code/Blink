@@ -236,7 +236,7 @@ function activate(interval, rateOfChange) {
         exponential(interval);
     }
 }
-activate(20, "exponential")
+// activate(20, "exponential")
 
 
 /**
@@ -266,29 +266,37 @@ function exponential(interval) {
 }
 
 
-function linear() {
+function linear2(interval) {
+    var stop = moment().add(interval, 'seconds');
     var later = require("later");
-    var sched = later.parse.recur().every(10).second();
-    later.setTimeout(function () {
+    var sched = later.parse.recur().every(2).second();
+    var pulse = later.setInterval(function () {
         console.log(new Date());
+        Flashes(1, 500, palette.blue, 1);
+
     }, sched);
+
+    schedule.scheduleJob(stop.toDate(), function () {
+        pulse.clear();
+    });
 }
 
-// function linear(interval) {
-//     var l = 20;
-//     var n = Math.floor(interval / l);
-//     var now = moment();
-//     Flashes(2, 500, palette.green, 1);
-//     for (var index = 0; index < n; index++) {
-//         schedule.scheduleJob(now.add(l, 's').toDate(), function () {
-//             Flashes(1, 500, palette.blue, 1);
-//             console.log("Hi!");
-//         });
-//         console.log("Pulse at: " + now.toDate());
-//     }
-// }
+function linear(interval) {
+    var l = 5;
+    var n = Math.floor(interval / l);
+    var now = moment();
+    // Flashes(2, 500, palette.green, 1);
+    for (var index = 0; index < n; index++) {
+        now = now.add(l, 's');
+        schedule.scheduleJob(now.toDate(), function () {
+            Flashes(2, 500, palette.blue, 1);
+            console.log("Hi!");
+        });
+        console.log("Pulse at: " + now.toDate());
+    }
+}
 
-// linear();
+linear2(10);
 
 function log(interval) { }
 
