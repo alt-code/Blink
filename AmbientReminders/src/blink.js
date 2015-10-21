@@ -33,19 +33,51 @@ var palette = {
     "deep_orange": "#FF3D00"
 };
 
-
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
-blink1.version(function (v) { console.log("Found blink1 with version", v); });
+blink1.version(function (v) {
+    console.log("Found blink1 with version", v);
+});
 
+// cleanup
+function exitHandler(options, err) {
+    if (err) {
+        console.log(err.stack);
+        process.exit();
+    } else {
+        console.log("closing");
+        blink1.setRGB(0, 0, 0, function () {
+            process.exit();
+        });
+    }
+}
+
+// do something when app is closing
+process.on('exit', exitHandler.bind(null, {
+    cleanup: true
+}));
+
+// catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {
+    exit: true
+}));
+
+// catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {
+    exit: true
+}));
+
+
+//******************************** PATTERS **********************************↓
 /**
  * Simulating police car lights
+ * @param  {number} interval [seconds]
  */
-function policeCar() {
+function policeCar(interval) {
     var r = 255;
     var b = 0;
     var rbbr = "rb";
-    setInterval(function () {
+    var pulse = setInterval(function () {
         //blink1.fadeToRGB(10, r, 0, b);
         blink1.setRGB(r, 0, b);
         if (rbbr === "rb") {
@@ -62,8 +94,13 @@ function policeCar() {
             }
         }
     }, 100);
+
+    var now = moment();
+    schedule.scheduleJob(now.add(interval, 's').toDate(), function () {
+        clearInterval(pulse);
+    });
 }
-// policeCar();
+// policeCar(10);
 
 
 /**
@@ -117,7 +154,7 @@ function SlowPulse(n, color, lightness, ledn) {
 //SlowPulse(5, palette.steelblue1); //lightness = 1 by defalt
 //SlowPulse(5, palette.steelblue1, 0.5);
 //SlowPulse(5, palette.steelblue1, 1);
-// SlowPulse(5, palette.steelblue1, 1);
+//SlowPulse(5, palette.steelblue1, 1);
 
 
 /**
@@ -133,58 +170,7 @@ function FastPulse(n, color, lightness, ledn) {
 //FastPulse(10, palette.cadmiumlemon); //lightness = 1 by defalt
 //FastPulse(10, palette.cadmiumlemon, 0.5);
 //FastPulse(5, palette.cadmiumlemon, 1);
-// FastPulse(5, palette.cadmiumlemon, 1, 2);
-
-
-/**
- * Generate a random Number between low and high
- * @param  {Number} low
- * @param  {Number} high
- * @return {Number}      A random Number between low and high
- */
-function randomInt(low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
-}
-
-// cleanup
-function exitHandler(options, err) {
-    if (err) {
-        console.log(err.stack);
-        process.exit();
-    } else {
-        console.log("closing");
-        blink1.setRGB(0, 0, 0, function () {
-            process.exit();
-        });
-    }
-}
-
-// do something when app is closing
-process.on('exit', exitHandler.bind(null, {
-    cleanup: true
-}));
-
-// catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {
-    exit: true
-}));
-
-// catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {
-    exit: true
-}));
-
-
-/**
- * Pause the script for miliSeconds
- * @param  {Number} miliSeconds length of pause
- */
-function sleep(miliSeconds) {
-    return function () {
-        var currentTime = new Date().getTime();
-        while (currentTime + miliSeconds >= new Date().getTime()) { }
-    }
-}
+//FastPulse(5, palette.cadmiumlemon, 1, 2);
 
 
 /**
@@ -214,11 +200,7 @@ function Lightnen(RGBHex, percent) {
 
 
 //******************************** SCHEDULING **********************************↓
-
-// TODO:    1 - A̶d̶d̶ ̶m̶o̶r̶e̶ ̶p̶a̶t̶t̶e̶r̶s̶
-//          2 - Rank patters
-//          3 - Implement 4 methods... (exponential, linear, log, sinusoidal)
-
+// TODO:    Ranking patters
 
 /**
  * Activate Blink(1) for the time interval and with the chosen rate of change
@@ -228,8 +210,6 @@ function Lightnen(RGBHex, percent) {
 function activate(interval, rateOfChange) {
     if (rateOfChange == "linear") {
         linear(interval);
-    } else if (rateOfChange == "log") {
-        log(interval);
     } else if (rateOfChange == "sinusoidal") {
         sinusoidal(interval);
     } else if (rateOfChange === "exponential") {
@@ -237,6 +217,7 @@ function activate(interval, rateOfChange) {
     }
 }
 // activate(20, "exponential")
+activate(20, "linear");
 
 
 /**
@@ -255,55 +236,61 @@ function exponential(interval) {
         count -= 1;
 
         schedule.scheduleJob(now.toDate(), function () {
-            Flashes(2, 200, getColorLinear(start, moment(), interval), 1);
+            Flashes(2, 200, generalGetColor(start, moment(), interval), 1);
             // Flashes(2, 200, getColorExp(1.1, interval, count), 1);
-            console.log("Hi there!" + " Color: " + getColorLinear(start, moment(), interval));
+            console.log("Hi there!" + " Color: " + generalGetColor(start, moment(), interval));
         });
 
         exp *= 1.1;
-        console.log("Pulse at: " + now.toDate() + " Color: " + getColorLinear(start, now, interval));
+        console.log("Pulse at: " + now.toDate() + " Color: " + generalGetColor(start, now, interval));
     }
 }
 
 
-function linear2(interval) {
+function linear(interval) {
+    var start = moment();
     var stop = moment().add(interval, 'seconds');
     var later = require("later");
-    var sched = later.parse.recur().every(2).second();
+    var sched = later.parse.recur().every(3).second();
     var pulse = later.setInterval(function () {
         console.log(new Date());
-        Flashes(1, 500, palette.blue, 1);
-
+        Flashes(1, 500, generalGetColor(start, moment(), interval), 1);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
         pulse.clear();
     });
 }
+// linear(18);
 
-function linear(interval) {
-    var l = 5;
-    var n = Math.floor(interval / l);
-    var now = moment();
-    // Flashes(2, 500, palette.green, 1);
-    for (var index = 0; index < n; index++) {
-        now = now.add(l, 's');
-        schedule.scheduleJob(now.toDate(), function () {
-            Flashes(2, 500, palette.blue, 1);
-            console.log("Hi!");
-        });
-        console.log("Pulse at: " + now.toDate());
-    }
-}
-
-linear2(10);
-
-function log(interval) { }
 
 function sinusoidal(interval) { }
 
 
 //******************************** HELPER FUNCTIONS **********************************↓
+
+/**
+ * Generate a random Number between low and high
+ * @param  {Number} low
+ * @param  {Number} high
+ * @return {Number}      A random Number between low and high
+ */
+function randomInt(low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
+
+
+/**
+ * Pause the script for miliSeconds
+ * @param  {Number} miliSeconds length of pause
+ */
+function sleep(miliSeconds) {
+    return function () {
+        var currentTime = new Date().getTime();
+        while (currentTime + miliSeconds >= new Date().getTime()) { }
+    }
+}
+
 
 /**
  * Finds out the needed color for exponential function, first 33.33% of the interval Green,
@@ -317,33 +304,55 @@ function getColorExp(exp, interval, count) {
     var n = Math.log(interval) / Math.log(exp);
     if (count < n / 3) {
         return palette.green;
-    }
-    else if (count < 2 * n / 3) {
+    } else if (count < 2 * n / 3) {
         return palette.yellow;
-    }
-    else {
+    } else {
         return palette.red;
     }
 }
 
 
 /**
- * Finds out the needed color for linear function, first 33.33% of the interval Green,
- *  second 33.33% of the interval Yellow, last 33.33%  of the interval Red
+ *  Finds out the needed color for all activation functions
+ *  If called in linear: first 33.33% of the interval Green, second 33.33% of the interval Yellow, last 33.33%  of the interval Red
+ *  If called in exponential: the color will change exponentially from green to yellow, to red
  * 
  * @param {moment} start a moment object
  * @param {moment} now a moment object
  * @param {int} interval length in seconds
  * @return {hex} color needed for linear function
  */
-function getColorLinear(start, now, interval) {
-    if (now.diff(start, 'seconds') < interval / 3) {
+function generalGetColor(start, now, interval) {
+    if (now.diff(start, 'seconds') <= interval / 3) {
         return palette.green;
-    }
-    else if (now.diff(start, 'seconds') < 2 * interval / 3) {
+    } else if (now.diff(start, 'seconds') <= 2 * interval / 3) {
         return palette.yellow;
-    }
-    else {
+    } else {
         return palette.red;
     }
 }
+
+
+
+
+//******************************** Just for later reference **********************************↓
+
+/**
+ * linear not working with schedule!!!
+ */
+function linearWorking(interval) {
+    var l = 5;
+    var n = Math.floor(interval / l);
+    var now = moment();
+    // Flashes(2, 500, palette.green, 1);
+    for (var index = 0; index < n; index++) {
+        now = now.add(l, 's');
+        schedule.scheduleJob(now.toDate(), function () {
+            Flashes(2, 500, palette.blue, 1);
+            console.log("Hi!");
+        });
+        console.log("Pulse at: " + now.toDate());
+        sleep(1000); //Still not working. Going to use later/schedule.js
+    }
+}
+// linearWorking(10);
