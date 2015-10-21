@@ -340,7 +340,7 @@ function generalGetColor(start, now, interval) {
 /**
  * linear not working with schedule!!!
  */
-function linearWorking(interval) {
+function linearNotWorking(interval) {
     var l = 5;
     var n = Math.floor(interval / l);
     var now = moment();
@@ -355,4 +355,4 @@ function linearWorking(interval) {
         sleep(1000); //Still not working. Going to use later/schedule.js
     }
 }
-// linearWorking(10);
+// linearNotWorking(10);
