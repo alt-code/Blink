@@ -46,9 +46,10 @@ function exitHandler(options, err) {
         process.exit();
     } else {
         console.log("closing");
-        blink1.setRGB(0, 0, 0, function () {
-            process.exit();
-        });
+        // blink1.setRGB(0, 0, 0, function () {
+        //     process.exit();
+        // });
+        process.exit();
     }
 }
 
@@ -67,6 +68,15 @@ process.on('uncaughtException', exitHandler.bind(null, {
     exit: true
 }));
 
+var args = process.argv.slice(2);
+var type = args[0];
+var length = args[1];
+
+if(type === "linear"){
+    linear(length);
+}else if(type === "exponential"){
+    exponential(length);
+}
 
 //******************************** PATTERS **********************************↓
 /**
@@ -217,7 +227,7 @@ function activate(interval, rateOfChange) {
     }
 }
 // activate(20, "exponential")
-activate(20, "linear");
+// activate(1800, "exponential");
 
 
 /**
@@ -246,11 +256,19 @@ function exponential(interval) {
     }
 }
 
+//not complete
+function exponential2() {
+    var sched = later.parse.recur().every(15).second();
+    var pulse = later.setInterval(function () {
+        console.log(new Date());
+        Flashes(1, 500, generalGetColor(start, moment(), interval), 1);
+    }, sched);
+}
+// exponential2()
 
 function linear(interval) {
     var start = moment();
     var stop = moment().add(interval, 'seconds');
-    var later = require("later");
     var sched = later.parse.recur().every(3).second();
     var pulse = later.setInterval(function () {
         console.log(new Date());
@@ -336,11 +354,10 @@ function generalGetColor(start, now, interval) {
 
 
 //******************************** Just for later reference **********************************↓
-
 /**
  * linear not working with schedule!!!
  */
-function linearWorking(interval) {
+function linearNotWorking(interval) {
     var l = 5;
     var n = Math.floor(interval / l);
     var now = moment();
@@ -355,4 +372,60 @@ function linearWorking(interval) {
         sleep(1000); //Still not working. Going to use later/schedule.js
     }
 }
-// linearWorking(10);
+// linearNotWorking(10);
+
+
+//******************************** Testing **********************************↓
+function hourGlass2(minutes) {
+    var end = moment().add(minutes, 'm');
+    var every = minutes / 6;
+    var sched = later.parse.recur().every(655349 / 1000).second();
+
+    var r = 0;
+    var g = 255;
+
+    var pulse = later.setInterval(function () {
+        console.log(moment().toDate());
+        blink1.setRGB(r, g, b);
+        blink1.fadeToRGB(655349 * 0.5, r, g, 0, function () {
+            blink1.fadeToRGB(655349 * 0.5, r, g, 0, function () {
+            });
+        });
+    }, sched);
+
+    //ending the interval after # minutes
+    schedule.scheduleJob(end.toDate(), function () {
+        clearInterval(pulse);
+    });
+}
+// hourGlass(0.5);
+
+//doesn't work for longer than 655349 milliseconds
+function hourGlass(minutes) {
+    blink1.setRGB(0, 255, 0);
+    blink1.fadeToRGB(minutes * 60 * 1000 * 0.5, 0, 255, 0, function () {
+        blink1.fadeToRGB(minutes * 60 * 1000 * 0.5, 255, 0, 0, function () { blink1.setRGB(0, 0, 0); })
+    });
+}
+// hourGlass(1);
+
+function pomodoroHourGlass() {
+    hourGlass2(25);
+}
+// pomodoroHourGlass();
+
+function fadeNoLimit(fadeMillis, r, g, b, ledn, funct) {
+    if (fadeMillis < 0) { return; }
+    if (fadeMillis > 655349) {
+        blink1.fadeToRGB(655349, r, g, b, ledn, function () {
+            fadeNoLimit(fadeMillis - 655349, r, g, b, ledn);
+        });
+    }
+    else {
+        blink1.setRGB(r, g, b);
+        blink1.fadeToRGB(fadeMillis, r, g, b, ledn, funct);
+    }
+}
+// fadeNoLimit(3000, 255, 0, 0, 1, function () {
+//     blink1.fadeToRGB(2000, 0, 255, 0);
+// });
