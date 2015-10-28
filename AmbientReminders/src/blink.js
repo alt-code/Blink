@@ -72,9 +72,9 @@ var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
 
-if(type === "linear"){
+if (type === "linear") {
     linear(length);
-}else if(type === "exponential"){
+} else if (type === "exponential") {
     exponential(length);
 }
 
@@ -376,38 +376,24 @@ function linearNotWorking(interval) {
 
 
 //******************************** Testing **********************************↓
-function hourGlass2(minutes) {
-    var end = moment().add(minutes, 'm');
-    var every = minutes / 6;
-    var sched = later.parse.recur().every(655349 / 1000).second();
-
-    var r = 0;
-    var g = 255;
-
+function solid(interval) {
+    var start = moment();
+    var end = moment().add(interval, 'seconds');
+    var sched = later.parse.recur().every(3).second();
     var pulse = later.setInterval(function () {
-        console.log(moment().toDate());
-        blink1.setRGB(r, g, b);
-        blink1.fadeToRGB(655349 * 0.5, r, g, 0, function () {
-            blink1.fadeToRGB(655349 * 0.5, r, g, 0, function () {
-            });
-        });
+        console.log(new Date());
+        var r = hexToR_G_B(generalGetColor(start, moment(), interval))[0];
+        var g = hexToR_G_B(generalGetColor(start, moment(), interval))[1];
+        var b = hexToR_G_B(generalGetColor(start, moment(), interval))[2];
+        blink1.setRGB(r,g,b);
     }, sched);
 
-    //ending the interval after # minutes
     schedule.scheduleJob(end.toDate(), function () {
-        clearInterval(pulse);
+        pulse.clear();
+        blink1.setRGB(0,0,0);
     });
 }
-// hourGlass(0.5);
-
-//doesn't work for longer than 655349 milliseconds
-function hourGlass(minutes) {
-    blink1.setRGB(0, 255, 0);
-    blink1.fadeToRGB(minutes * 60 * 1000 * 0.5, 0, 255, 0, function () {
-        blink1.fadeToRGB(minutes * 60 * 1000 * 0.5, 255, 0, 0, function () { blink1.setRGB(0, 0, 0); })
-    });
-}
-// hourGlass(1);
+solid(30);
 
 function pomodoroHourGlass() {
     hourGlass2(25);
