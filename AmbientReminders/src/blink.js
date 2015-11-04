@@ -258,7 +258,7 @@ function exponential(interval) {
     }
 
     schedule.scheduleJob(end.toDate(), function () {
-        // policeCar(5);
+        // policeCar(5);        //I think this would work as well
         blink1.setRGB(255, 0, 0, function () {
             blink1.fadeToRGB(5000, 0, 0, 0);
         });
@@ -266,18 +266,20 @@ function exponential(interval) {
 }
 // exponential(10);
 
+
+//Note changed to minutes!
 function linear(interval) {
     var start = moment();
-    var stop = moment().add(interval, 'seconds');
-    var sched = later.parse.recur().every(3).second();
+    var stop = moment().add(interval, 'minutes');
+    var sched = later.parse.recur().every(60).second();
     var pulse = later.setInterval(function () {
         console.log(new Date());
-        Flashes(1, 500, generalGetColor(start, moment(), interval), 1);
+        Flashes(1, 1000, generalGetColor(start, moment(), interval*60), 1);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
         pulse.clear();
-        //policeCar(5);
+        //policeCar(5);     //I think this would work as well
         blink1.setRGB(255, 0, 0, function () {
             blink1.fadeToRGB(5000, 0, 0, 0);
         });
@@ -357,15 +359,16 @@ function generalGetColor(start, now, interval) {
 
 
 //******************************** Testing **********************************↓
+//Note: takes minutes now!
 function solid(interval) {
     var start = moment();
-    var end = moment().add(interval, 'seconds');
+    var end = moment().add(interval, 'minutes');
     var sched = later.parse.recur().every(3).second();
     var pulse = later.setInterval(function () {
         console.log(new Date());
-        var r = hexToR_G_B(generalGetColor(start, moment(), interval))[0];
-        var g = hexToR_G_B(generalGetColor(start, moment(), interval))[1];
-        var b = hexToR_G_B(generalGetColor(start, moment(), interval))[2];
+        var r = hexToR_G_B(generalGetColor(start, moment(), interval*60))[0];
+        var g = hexToR_G_B(generalGetColor(start, moment(), interval*60))[1];
+        var b = hexToR_G_B(generalGetColor(start, moment(), interval*60))[2];
         blink1.setRGB(r, g, b);
     }, sched);
 
@@ -376,7 +379,7 @@ function solid(interval) {
         policeCar(5);
     });
 }
-// solid(10);
+solid(1);
 
 function pomodoroSolid() {
     solid(25);
