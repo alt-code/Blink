@@ -34,6 +34,39 @@ function exitHandler(options, err) {
     }
 }
 
+var solidAlarm = 
+{
+    onIntervel : function (start, interval) 
+    {
+        console.log(new Date());
+        var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
+        var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
+        var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
+        blink1.setRGB(r, g, b);
+    },
+    onEnd : function () 
+    {
+        policeCar(5);
+    }
+};
+
+var pulseAlarm = 
+{
+    onIntervel : function (start, interval) 
+    {
+        console.log(new Date());
+        Flashes(1, 1000, generalGetColor(start, moment(), interval * 60), 1);
+    },
+    onEnd : function () 
+    {
+        blink1.setRGB(255, 0, 0, function () {
+            blink1.fadeToRGB(10000, 0, 0, 0);
+        });
+    }
+
+};
+
+
 // do something when app is closing
 process.on('exit', exitHandler.bind(null, {
     cleanup: true
@@ -53,10 +86,17 @@ var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
 
-if (type === "linear") {
-    linear(length);
-} else if (type === "exponential") {
+if (type === "linear") 
+{
+    linear(length, pulseAlarm);
+} 
+else if (type === "exponential") 
+{
     exponential(length);
+}
+else if( type === "solid")
+{
+    linear(length, solidAlarm);
 }
 
 var palette = {
@@ -223,52 +263,27 @@ function exponential(interval) {
 // exponential(10);
 
 
+
 //Note: interval is changed to minutes!
-function linear(interval) {
+function linear(interval, alarm) {
     var start = moment();
     var stop = moment().add(interval, 'minutes');
     var sched = later.parse.recur().every(60).second();
     var pulse = later.setInterval(function () {
-        console.log(new Date());
-        Flashes(1, 1000, generalGetColor(start, moment(), interval * 60), 1);
+        alarm.onIntervel(start,interval);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
         pulse.clear();
-        //policeCar(5);     //I think this would work as well
-        blink1.setRGB(255, 0, 0, function () {
-            blink1.fadeToRGB(5000, 0, 0, 0);
-        });
+        alarm.onEnd();
     });
 }
-// linear(10);
 
 
 function sinusoidal(interval) { 
     //TODO?
 }
 
-//Note: takes minutes now!
-function solid(interval) {
-    var start = moment();
-    var end = moment().add(interval, 'minutes');
-    var sched = later.parse.recur().every(3).second();
-    var pulse = later.setInterval(function () {
-        console.log(new Date());
-        var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
-        var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
-        var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
-        blink1.setRGB(r, g, b);
-    }, sched);
-
-    schedule.scheduleJob(end.toDate(), function () {
-        pulse.clear();
-        blink1.setRGB(0, 0, 0);
-        //FastPulse(5, palette.red, 1);
-        policeCar(5);
-    });
-}
-solid(1);
 
 
 function pomodoroSolid() {
