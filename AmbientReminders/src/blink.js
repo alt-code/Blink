@@ -121,9 +121,9 @@ var palette = {
 //******************************** PATTERS **********************************↓
 /**
  * Simulating police car lights
- * @param  {number} interval [seconds]
+ * @param  {number} sessionLength [seconds]
  */
-function policeCar(interval) {
+function policeCar(sessionLength) {
     var r = 255;
     var b = 0;
     var rbbr = "rb";
@@ -146,7 +146,7 @@ function policeCar(interval) {
     }, 100);
 
     var now = moment();
-    schedule.scheduleJob(now.add(interval, 's').toDate(), function () {
+    schedule.scheduleJob(now.add(sessionLength, 's').toDate(), function () {
         clearInterval(pulse);
         blink1.setRGB(0, 0, 0);
     });
@@ -211,46 +211,46 @@ function FastPulse(n, color, lightness, ledn) {
 // TODO:    Ranking patters
 
 /**
- * Activate Blink(1) for the time interval and with the chosen rate of change
- * @param  {int} interval     interval in seconds(for now - testing)
+ * Activate Blink(1) for the time sessionLength and with the chosen rate of change
+ * @param  {int} sessionLength     sessionLength in seconds(for now - testing)
  * @param  {String} rateOfChange "exponential", "linear", "log", "sinusoidal"
  */
-function activate(interval, rateOfChange) {
+function activate(sessionLength, rateOfChange) {
     if (rateOfChange == "linear") {
-        linear(interval);
+        linear(sessionLength);
     } else if (rateOfChange == "sinusoidal") {
-        sinusoidal(interval);
+        sinusoidal(sessionLength);
     } else if (rateOfChange === "exponential") {
-        exponential(interval);
+        exponential(sessionLength);
     }
 }
 // activate(20, "exponential")
 
 
 /**
- * Exponentially activates during the given interval
- * @param  {int} interval     interval in seconds(for now - because testing)
+ * Exponentially activates during the given sessionLength
+ * @param  {int} sessionLength     sessionLength in seconds(for now - because testing)
  */
-function exponential(interval) {
+function exponential(sessionLength) {
     var start = moment();
-    var end = start.add(interval, 's');
+    var end = start.add(sessionLength, 's');
     var exp = 1.1;
-    var count = Math.floor(Math.log(interval) / Math.log(exp));
+    var count = Math.floor(Math.log(sessionLength) / Math.log(exp));
     console.log(count);
 
-    while (Math.floor(exp) < interval) {
+    while (Math.floor(exp) < sessionLength) {
         var now = moment();
-        now.add(interval - Math.floor(exp), 's');
+        now.add(sessionLength - Math.floor(exp), 's');
         count -= 1;
 
         schedule.scheduleJob(now.toDate(), function () {
-            Flashes(2, 200, generalGetColor(start, moment(), interval), 1);
-            // Flashes(2, 200, getColorExp(1.1, interval, count), 1);
-            console.log("Hi there!" + " Color: " + generalGetColor(start, moment(), interval));
+            Flashes(2, 200, generalGetColor(start, moment(), sessionLength), 1);
+            // Flashes(2, 200, getColorExp(1.1, sessionLength, count), 1);
+            console.log("Hi there!" + " Color: " + generalGetColor(start, moment(), sessionLength));
         });
 
         exp *= 1.1;
-        console.log("Pulse at: " + now.toDate() + " Color: " + generalGetColor(start, now, interval));
+        console.log("Pulse at: " + now.toDate() + " Color: " + generalGetColor(start, now, sessionLength));
     }
 
     schedule.scheduleJob(end.toDate(), function () {
@@ -264,13 +264,13 @@ function exponential(interval) {
 
 
 
-//Note: interval is changed to minutes!
-function linear(interval, alarm) {
+//Note: sessionLength is changed to minutes!
+function linear(sessionLength, alarm) {
     var start = moment();
-    var stop = moment().add(interval, 'minutes');
+    var stop = moment().add(sessionLength, 'minutes');
     var sched = later.parse.recur().every(60).second();
     var pulse = later.setInterval(function () {
-        alarm.onIntervel(start,interval);
+        alarm.onIntervel(start,sessionLength);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
@@ -280,16 +280,9 @@ function linear(interval, alarm) {
 }
 
 
-function sinusoidal(interval) { 
+function sinusoidal(sessionLength) { 
     //TODO?
 }
-
-
-
-function pomodoroSolid() {
-    solid(25);
-}
-// pomodoroSolid();
 
 
 //******************************** HELPER FUNCTIONS **********************************↓
@@ -344,15 +337,15 @@ function sleep(miliSeconds) {
 
 
 /**
- * Finds out the needed color for exponential function, first 33.33% of the interval Green,
- *  second 33.33% of the interval Yellow, last 33.33% of the interval Red
+ * Finds out the needed color for exponential function, first 33.33% of the sessionLength Green,
+ *  second 33.33% of the sessionLength Yellow, last 33.33% of the sessionLength Red
  * 
  * @param {Number} double
- * @param {int} interval length in seconds
+ * @param {int} sessionLength in seconds
  * @return {hex} color needed for linear function
  */
-function getColorExp(exp, interval, count) {
-    var n = Math.log(interval) / Math.log(exp);
+function getColorExp(exp, sessionLength, count) {
+    var n = Math.log(sessionLength) / Math.log(exp);
     if (count < n / 3) {
         return palette.green;
     } else if (count < 2 * n / 3) {
@@ -365,18 +358,18 @@ function getColorExp(exp, interval, count) {
 
 /**
  *  Finds out the needed color for all activation functions
- *  If called in linear: first 33.33% of the interval Green, second 33.33% of the interval Yellow, last 33.33%  of the interval Red
+ *  If called in linear: first 33.33% of the sessionLength Green, second 33.33% of the sessionLength Yellow, last 33.33%  of the sessionLength Red
  *  If called in exponential: the color will change exponentially from green to yellow, to red
  * 
  * @param {moment} start a moment object
  * @param {moment} now a moment object
- * @param {int} interval length in seconds
+ * @param {int} sessionLength in seconds
  * @return {hex} color needed for linear function
  */
-function generalGetColor(start, now, interval) {
-    if (now.diff(start, 'seconds') <= interval / 3) {
+function generalGetColor(start, now, sessionLength) {
+    if (now.diff(start, 'seconds') <= sessionLength / 3) {
         return palette.green;
-    } else if (now.diff(start, 'seconds') <= 2 * interval / 3) {
+    } else if (now.diff(start, 'seconds') <= 2 * sessionLength / 3) {
         return palette.yellow;
     } else {
         return palette.red;
@@ -386,34 +379,3 @@ function generalGetColor(start, now, interval) {
 
 //******************************** Testing **********************************↓
 
-/*
-var pulseAlarm = {
-    alarm: function () {
-        var start = moment();
-        var end = moment().add(interval, 'minutes');
-        var sched = later.parse.recur().every(3).second();
-        var pulse = later.setInterval(function () {
-            console.log(new Date());
-            var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
-            var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
-            var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
-            blink1.setRGB(r, g, b);
-        }, sched);
-
-        schedule.scheduleJob(end.toDate(), function () {
-            pulse.clear();
-            blink1.setRGB(0, 0, 0);
-            //FastPulse(5, palette.red, 1);
-            policeCar(5);
-        });
-    }
-};
-
-var solidAlarm = {
-    alarm: function () {
-        //TODO
-    }
-}
-
-linear(pulseAlarm);
-*/
