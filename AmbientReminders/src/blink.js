@@ -14,25 +14,6 @@ var later = require("later");
  * hex(); // "#800000"
  */
 
-var palette = {
-    "cadmiumlemon": "#FFE303",
-    "darkolivegreen": "#556B2F",
-    "cinnamon": "#7B3F00",
-    "steelblue1": "#63B8FF",
-    "skyblue1": "#87CEFF",
-    "red": "#FF0000",
-    "pink": "#FF00FF",
-    "purple": '#C300C3',
-    "cyan": "#00FFFF",
-    "blue": "#0000FF",
-    "light_blue": "#80D8FF",
-    "green": "#00FF00",
-    "yellow": "#FFEB3B",
-    "amber": "#FFC107",
-    "orange": "#FF9800",
-    "deep_orange": "#FF3D00"
-};
-
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
 blink1.version(function (v) {
@@ -78,6 +59,25 @@ if (type === "linear") {
     exponential(length);
 }
 
+var palette = {
+    "cadmiumlemon": "#FFE303",
+    "darkolivegreen": "#556B2F",
+    "cinnamon": "#7B3F00",
+    "steelblue1": "#63B8FF",
+    "skyblue1": "#87CEFF",
+    "red": "#FF0000",
+    "pink": "#FF00FF",
+    "purple": '#C300C3',
+    "cyan": "#00FFFF",
+    "blue": "#0000FF",
+    "light_blue": "#80D8FF",
+    "green": "#00FF00",
+    "yellow": "#FFEB3B",
+    "amber": "#FFC107",
+    "orange": "#FF9800",
+    "deep_orange": "#FF3D00"
+};
+
 //******************************** PATTERS **********************************↓
 /**
  * Simulating police car lights
@@ -111,7 +111,7 @@ function policeCar(interval) {
         blink1.setRGB(0, 0, 0);
     });
 }
-// policeCar(10);
+
 
 
 /**
@@ -123,7 +123,7 @@ function policeCar(interval) {
  * @param {Number} ledn choose led number [optional]
  */
 function Flashes(n, fadeMillis, color, lightness, ledn) {
-    // default value
+    // default value: lightness = 1
     lightness = typeof lightness !== 'undefined' ? lightness : 1;
 
     var r = hexToR_G_B(Lightnen(color, lightness))[0];
@@ -138,18 +138,8 @@ function Flashes(n, fadeMillis, color, lightness, ledn) {
             Flashes(n - 1, fadeMillis, color, lightness, ledn);
         });
     });
-
-    //Old code:
-    // blink1.fadeToRGB(fadeMillis, r, g, b, function() {
-    //     blink1.fadeToRGB(fadeMillis, 0, 0, 0, function() {
-    //         Flashes(n - 1, fadeMillis, color, lightness, ledn);
-    //     });
-    // }, ledn);
 }
-//Flashes(10, 1000, palette.skyblue1); //lightness = 1 by defalt
-//Flashes(10, 1000, palette.skyblue1, 0.5);
-//Flashes(10, 1000, palette.skyblue1, 1); //still can call Flashes without ledn
-//Flashes(10, 1000, palette.skyblue1, 1, 2);
+
 
 
 /**
@@ -162,10 +152,7 @@ function Flashes(n, fadeMillis, color, lightness, ledn) {
 function SlowPulse(n, color, lightness, ledn) {
     Flashes(n, 5000, color, lightness, ledn);
 }
-//SlowPulse(5, palette.steelblue1); //lightness = 1 by defalt
-//SlowPulse(5, palette.steelblue1, 0.5);
-//SlowPulse(5, palette.steelblue1, 1);
-//SlowPulse(5, palette.steelblue1, 1);
+
 
 
 /**
@@ -177,36 +164,6 @@ function SlowPulse(n, color, lightness, ledn) {
  */
 function FastPulse(n, color, lightness, ledn) {
     Flashes(n, 1000, color, lightness, ledn);
-}
-//FastPulse(10, palette.cadmiumlemon); //lightness = 1 by defalt
-//FastPulse(10, palette.cadmiumlemon, 0.5);
-//FastPulse(5, palette.cadmiumlemon, 1);
-//FastPulse(5, palette.cadmiumlemon, 1, 2);
-
-
-/**
- * Assign Red, Green, Blue of a hex String to [R, G, B]
- * @param  {String} hex The hex value of color
- * @return {Array}     [Red, Green, Blue] of the color in RGB
- */
-function hexToR_G_B(hex) {
-    return [parseInt(hex.substring(1, 3), 16),
-        parseInt(hex.substring(3, 5), 16),
-        parseInt(hex.substring(5, 7), 16)
-    ];
-}
-
-
-/**
- * Reduce RGBHex's lightness to this percentage - use 0 (off)-1
- * @param {String} RGBHex  hex color (RGB)
- * @param {Number} percent reducing lightness of color to this percentage
- * @return {String} color hex
- */
-function Lightnen(RGBHex, percent) {
-    var L = new color(RGBHex).lightness();
-    var c = new color(RGBHex).lightness(L * percent).hex();
-    return c;
 }
 
 
@@ -228,7 +185,6 @@ function activate(interval, rateOfChange) {
     }
 }
 // activate(20, "exponential")
-// activate(1800, "exponential");
 
 
 /**
@@ -267,14 +223,14 @@ function exponential(interval) {
 // exponential(10);
 
 
-//Note changed to minutes!
+//Note: interval is changed to minutes!
 function linear(interval) {
     var start = moment();
     var stop = moment().add(interval, 'minutes');
     var sched = later.parse.recur().every(60).second();
     var pulse = later.setInterval(function () {
         console.log(new Date());
-        Flashes(1, 1000, generalGetColor(start, moment(), interval*60), 1);
+        Flashes(1, 1000, generalGetColor(start, moment(), interval * 60), 1);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
@@ -288,10 +244,66 @@ function linear(interval) {
 // linear(10);
 
 
-function sinusoidal(interval) { }
+function sinusoidal(interval) { 
+    //TODO?
+}
+
+//Note: takes minutes now!
+function solid(interval) {
+    var start = moment();
+    var end = moment().add(interval, 'minutes');
+    var sched = later.parse.recur().every(3).second();
+    var pulse = later.setInterval(function () {
+        console.log(new Date());
+        var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
+        var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
+        var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
+        blink1.setRGB(r, g, b);
+    }, sched);
+
+    schedule.scheduleJob(end.toDate(), function () {
+        pulse.clear();
+        blink1.setRGB(0, 0, 0);
+        //FastPulse(5, palette.red, 1);
+        policeCar(5);
+    });
+}
+solid(1);
+
+
+function pomodoroSolid() {
+    solid(25);
+}
+// pomodoroSolid();
 
 
 //******************************** HELPER FUNCTIONS **********************************↓
+
+/**
+ * Assign Red, Green, Blue of a hex String to [R, G, B]
+ * @param  {String} hex The hex value of color
+ * @return {Array}     [Red, Green, Blue] of the color in RGB
+ */
+function hexToR_G_B(hex) {
+    return [parseInt(hex.substring(1, 3), 16),
+        parseInt(hex.substring(3, 5), 16),
+        parseInt(hex.substring(5, 7), 16)
+    ];
+}
+
+
+/**
+ * Reduce RGBHex's lightness to this percentage - use 0 (off)-1
+ * @param {String} RGBHex  hex color (RGB)
+ * @param {Number} percent reducing lightness of color to this percentage
+ * @return {String} color hex
+ */
+function Lightnen(RGBHex, percent) {
+    var L = new color(RGBHex).lightness();
+    var c = new color(RGBHex).lightness(L * percent).hex();
+    return c;
+}
+
 
 /**
  * Generate a random Number between low and high
@@ -357,31 +369,36 @@ function generalGetColor(start, now, interval) {
 }
 
 
-
 //******************************** Testing **********************************↓
-//Note: takes minutes now!
-function solid(interval) {
-    var start = moment();
-    var end = moment().add(interval, 'minutes');
-    var sched = later.parse.recur().every(3).second();
-    var pulse = later.setInterval(function () {
-        console.log(new Date());
-        var r = hexToR_G_B(generalGetColor(start, moment(), interval*60))[0];
-        var g = hexToR_G_B(generalGetColor(start, moment(), interval*60))[1];
-        var b = hexToR_G_B(generalGetColor(start, moment(), interval*60))[2];
-        blink1.setRGB(r, g, b);
-    }, sched);
 
-    schedule.scheduleJob(end.toDate(), function () {
-        pulse.clear();
-        blink1.setRGB(0, 0, 0);
-        //FastPulse(5, palette.red, 1);
-        policeCar(5);
-    });
-}
-solid(1);
+/*
+var pulseAlarm = {
+    alarm: function () {
+        var start = moment();
+        var end = moment().add(interval, 'minutes');
+        var sched = later.parse.recur().every(3).second();
+        var pulse = later.setInterval(function () {
+            console.log(new Date());
+            var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
+            var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
+            var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
+            blink1.setRGB(r, g, b);
+        }, sched);
 
-function pomodoroSolid() {
-    solid(25);
+        schedule.scheduleJob(end.toDate(), function () {
+            pulse.clear();
+            blink1.setRGB(0, 0, 0);
+            //FastPulse(5, palette.red, 1);
+            policeCar(5);
+        });
+    }
+};
+
+var solidAlarm = {
+    alarm: function () {
+        //TODO
+    }
 }
-// pomodoroSolid();
+
+linear(pulseAlarm);
+*/
