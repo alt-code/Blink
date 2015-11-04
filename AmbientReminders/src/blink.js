@@ -108,7 +108,7 @@ function policeCar(interval) {
     var now = moment();
     schedule.scheduleJob(now.add(interval, 's').toDate(), function () {
         clearInterval(pulse);
-        blink1.setRGB(0,0,0);
+        blink1.setRGB(0, 0, 0);
     });
 }
 // policeCar(10);
@@ -237,6 +237,7 @@ function activate(interval, rateOfChange) {
  */
 function exponential(interval) {
     var start = moment();
+    var end = start.add(interval, 's');
     var exp = 1.1;
     var count = Math.floor(Math.log(interval) / Math.log(exp));
     console.log(count);
@@ -255,17 +256,15 @@ function exponential(interval) {
         exp *= 1.1;
         console.log("Pulse at: " + now.toDate() + " Color: " + generalGetColor(start, now, interval));
     }
-}
 
-//not complete
-function exponential2() {
-    var sched = later.parse.recur().every(15).second();
-    var pulse = later.setInterval(function () {
-        console.log(new Date());
-        Flashes(1, 500, generalGetColor(start, moment(), interval), 1);
-    }, sched);
+    schedule.scheduleJob(end.toDate(), function () {
+        // policeCar(5);
+        blink1.setRGB(255, 0, 0, function () {
+            blink1.fadeToRGB(5000, 0, 0, 0);
+        });
+    });
 }
-// exponential2()
+// exponential(10);
 
 function linear(interval) {
     var start = moment();
@@ -278,9 +277,13 @@ function linear(interval) {
 
     schedule.scheduleJob(stop.toDate(), function () {
         pulse.clear();
+        //policeCar(5);
+        blink1.setRGB(255, 0, 0, function () {
+            blink1.fadeToRGB(5000, 0, 0, 0);
+        });
     });
 }
-// linear(18);
+// linear(10);
 
 
 function sinusoidal(interval) { }
@@ -352,27 +355,6 @@ function generalGetColor(start, now, interval) {
 }
 
 
-//******************************** Just for later reference **********************************↓
-/**
- * linear not working with schedule!!!
- */
-function linearNotWorking(interval) {
-    var l = 5;
-    var n = Math.floor(interval / l);
-    var now = moment();
-    // Flashes(2, 500, palette.green, 1);
-    for (var index = 0; index < n; index++) {
-        now = now.add(l, 's');
-        schedule.scheduleJob(now.toDate(), function () {
-            Flashes(2, 500, palette.blue, 1);
-            console.log("Hi!");
-        });
-        console.log("Pulse at: " + now.toDate());
-        sleep(1000); //Still not working. Going to use later/schedule.js
-    }
-}
-// linearNotWorking(10);
-
 
 //******************************** Testing **********************************↓
 function solid(interval) {
@@ -384,17 +366,17 @@ function solid(interval) {
         var r = hexToR_G_B(generalGetColor(start, moment(), interval))[0];
         var g = hexToR_G_B(generalGetColor(start, moment(), interval))[1];
         var b = hexToR_G_B(generalGetColor(start, moment(), interval))[2];
-        blink1.setRGB(r,g,b);
+        blink1.setRGB(r, g, b);
     }, sched);
 
     schedule.scheduleJob(end.toDate(), function () {
         pulse.clear();
-        blink1.setRGB(0,0,0);
+        blink1.setRGB(0, 0, 0);
         //FastPulse(5, palette.red, 1);
         policeCar(5);
     });
 }
-solid(10);
+// solid(10);
 
 function pomodoroSolid() {
     solid(25);
