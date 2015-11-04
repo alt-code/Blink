@@ -108,6 +108,7 @@ function policeCar(interval) {
     var now = moment();
     schedule.scheduleJob(now.add(interval, 's').toDate(), function () {
         clearInterval(pulse);
+        blink1.setRGB(0,0,0);
     });
 }
 // policeCar(10);
@@ -351,8 +352,6 @@ function generalGetColor(start, now, interval) {
 }
 
 
-
-
 //******************************** Just for later reference **********************************↓
 /**
  * linear not working with schedule!!!
@@ -391,27 +390,13 @@ function solid(interval) {
     schedule.scheduleJob(end.toDate(), function () {
         pulse.clear();
         blink1.setRGB(0,0,0);
+        //FastPulse(5, palette.red, 1);
+        policeCar(5);
     });
 }
-solid(30);
+solid(10);
 
-function pomodoroHourGlass() {
-    hourGlass2(25);
+function pomodoroSolid() {
+    solid(25);
 }
-// pomodoroHourGlass();
-
-function fadeNoLimit(fadeMillis, r, g, b, ledn, funct) {
-    if (fadeMillis < 0) { return; }
-    if (fadeMillis > 655349) {
-        blink1.fadeToRGB(655349, r, g, b, ledn, function () {
-            fadeNoLimit(fadeMillis - 655349, r, g, b, ledn);
-        });
-    }
-    else {
-        blink1.setRGB(r, g, b);
-        blink1.fadeToRGB(fadeMillis, r, g, b, ledn, funct);
-    }
-}
-// fadeNoLimit(3000, 255, 0, 0, 1, function () {
-//     blink1.fadeToRGB(2000, 0, 255, 0);
-// });
+// pomodoroSolid();
