@@ -14,6 +14,25 @@ var later = require("later");
  * hex(); // "#800000"
  */
 
+var palette = {
+    "cadmiumlemon": "#FFE303",
+    "darkolivegreen": "#556B2F",
+    "cinnamon": "#7B3F00",
+    "steelblue1": "#63B8FF",
+    "skyblue1": "#87CEFF",
+    "red": "#FF0000",
+    "pink": "#FF00FF",
+    "purple": '#C300C3',
+    "cyan": "#00FFFF",
+    "blue": "#0000FF",
+    "light_blue": "#80D8FF",
+    "green": "#00FF00",
+    "yellow": "#FFEB3B",
+    "amber": "#FFC107",
+    "orange": "#FF9800",
+    "deep_orange": "#FF3D00"
+};
+
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
 blink1.version(function (v) {
@@ -34,37 +53,34 @@ function exitHandler(options, err) {
     }
 }
 
-var solidAlarm = 
-{
-    onIntervel : function (start, interval) 
+var solidAlarm =
     {
-        console.log(new Date());
-        var r = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[0];
-        var g = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[1];
-        var b = hexToR_G_B(generalGetColor(start, moment(), interval * 60))[2];
-        blink1.setRGB(r, g, b);
-    },
-    onEnd : function () 
-    {
-        policeCar(5);
-    }
-};
+        onIntervel: function (start, sessionLength, reminde, reminderInterval) {
+            console.log(new Date());
+            var r = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[0];
+            var g = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[1];
+            var b = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[2];
+            blink1.setRGB(r, g, b);
+        },
+        onEnd: function () {
+            policeCar(5);
+            blink1.setRGB(0, 0, 0);
+        }
+    };
 
-var pulseAlarm = 
-{
-    onIntervel : function (start, interval) 
+var pulseAlarm =
     {
-        console.log(new Date());
-        Flashes(1, 1000, generalGetColor(start, moment(), interval * 60), 1);
-    },
-    onEnd : function () 
-    {
-        blink1.setRGB(255, 0, 0, function () {
-            blink1.fadeToRGB(10000, 0, 0, 0);
-        });
-    }
+        onIntervel: function (start, sessionLength, reminderInterval) {
+            console.log(new Date());
+            Flashes(1, 1000, generalGetColor(start, moment(), sessionLength * 60), 1);
+        },
+        onEnd: function () {
+            blink1.setRGB(255, 0, 0, function () {
+                blink1.fadeToRGB(10000, 0, 0, 0);
+            });
+        }
 
-};
+    };
 
 
 // do something when app is closing
@@ -86,37 +102,18 @@ var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
 
-if (type === "linear") 
-{
-    linear(length, pulseAlarm);
-} 
-else if (type === "exponential") 
-{
+if (type === "linear") {
+    linear(length, pulseAlarm, 60);
+}
+else if (type === "exponential") {
+
     exponential(length);
 }
-else if( type === "solid")
-{
-    linear(length, solidAlarm);
+else if (type === "solid") {
+    linear(length, solidAlarm, 1);
 }
 
-var palette = {
-    "cadmiumlemon": "#FFE303",
-    "darkolivegreen": "#556B2F",
-    "cinnamon": "#7B3F00",
-    "steelblue1": "#63B8FF",
-    "skyblue1": "#87CEFF",
-    "red": "#FF0000",
-    "pink": "#FF00FF",
-    "purple": '#C300C3',
-    "cyan": "#00FFFF",
-    "blue": "#0000FF",
-    "light_blue": "#80D8FF",
-    "green": "#00FF00",
-    "yellow": "#FFEB3B",
-    "amber": "#FFC107",
-    "orange": "#FF9800",
-    "deep_orange": "#FF3D00"
-};
+
 
 //******************************** PATTERS **********************************↓
 /**
@@ -265,12 +262,12 @@ function exponential(sessionLength) {
 
 
 //Note: sessionLength is changed to minutes!
-function linear(sessionLength, alarm) {
+function linear(sessionLength, alarm, reminderInterval) {
     var start = moment();
     var stop = moment().add(sessionLength, 'minutes');
-    var sched = later.parse.recur().every(60).second();
+    var sched = later.parse.recur().every(reminderInterval).second();
     var pulse = later.setInterval(function () {
-        alarm.onIntervel(start,sessionLength);
+        alarm.onIntervel(start, sessionLength, reminderInterval, pulse);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
