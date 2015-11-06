@@ -208,23 +208,6 @@ function FastPulse(n, color, lightness, ledn) {
 // TODO:    Ranking patters
 
 /**
- * Activate Blink(1) for the time sessionLength and with the chosen rate of change
- * @param  {int} sessionLength     sessionLength in seconds(for now - testing)
- * @param  {String} rateOfChange "exponential", "linear", "log", "sinusoidal"
- */
-function activate(sessionLength, rateOfChange) {
-    if (rateOfChange == "linear") {
-        linear(sessionLength);
-    } else if (rateOfChange == "sinusoidal") {
-        sinusoidal(sessionLength);
-    } else if (rateOfChange === "exponential") {
-        exponential(sessionLength);
-    }
-}
-// activate(20, "exponential")
-
-
-/**
  * Exponentially activates during the given sessionLength
  * @param  {int} sessionLength     sessionLength in seconds(for now - because testing)
  */
