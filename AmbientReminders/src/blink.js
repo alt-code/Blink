@@ -55,7 +55,7 @@ function exitHandler(options, err) {
 
 var solidAlarm =
     {
-        onIntervel: function (start, sessionLength, reminde, reminderInterval) {
+        onInterval: function (start, sessionLength, reminde, reminderInterval) {
             console.log(new Date());
             var r = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[0];
             var g = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[1];
@@ -70,7 +70,7 @@ var solidAlarm =
 
 var pulseAlarm =
     {
-        onIntervel: function (start, sessionLength, reminderInterval) {
+        onInterval: function (start, sessionLength, reminderInterval) {
             console.log(new Date());
             Flashes(1, 1000, generalGetColor(start, moment(), sessionLength * 60), 1);
         },
@@ -267,7 +267,7 @@ function linear(sessionLength, alarm, reminderInterval) {
     var stop = moment().add(sessionLength, 'minutes');
     var sched = later.parse.recur().every(reminderInterval).second();
     var pulse = later.setInterval(function () {
-        alarm.onIntervel(start, sessionLength, reminderInterval, pulse);
+        alarm.onInterval(start, sessionLength, reminderInterval, pulse);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function () {
