@@ -46,9 +46,9 @@ function exitHandler(options, err) {
         process.exit();
     } else {
         console.log("closing");
-        // blink1.setRGB(0, 0, 0, function () {
-        //     process.exit();
-        // });
+        blink1.setRGB(0, 0, 0, function () {
+           process.exit();
+        });
         process.exit();
     }
 }
