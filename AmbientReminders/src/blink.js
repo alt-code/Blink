@@ -54,11 +54,12 @@ function exitHandler(options, err) {
 }
 
 var solidAlarm = {
-    onInterval: function(start, sessionLength, reminde, reminderInterval) {
+    onInterval: function(start, sessionLength, lightness) {
         console.log(new Date());
-        var r = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[0];
-        var g = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[1];
-        var b = hexToR_G_B(generalGetColor(start, moment(), sessionLength * 60))[2];
+        var myColor = hexToR_G_B(Lightnen(generalGetColor(start, moment(), sessionLength * 60), lightness));
+        var r = myColor[0];
+        var g = myColor[1];
+        var b = myColor[2];
         blink1.setRGB(r, g, b);
     },
     onEnd: function() {
@@ -68,9 +69,9 @@ var solidAlarm = {
 };
 
 var pulseAlarm = {
-    onInterval: function(start, sessionLength, reminderInterval) {
+    onInterval: function(start, sessionLength, lightness) {
         console.log(new Date());
-        Flashes(1, 1000, generalGetColor(start, moment(), sessionLength * 60), 1);
+        Flashes(1, 1000, generalGetColor(start, moment(), sessionLength * 60), lightness);
     },
     onEnd: function() {
         blink1.setRGB(255, 0, 0, function() {
@@ -99,14 +100,14 @@ process.on('uncaughtException', exitHandler.bind(null, {
 var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
+var lightness = args[2];
 
 if (type === "linear") {
-    linear(length, pulseAlarm, 60);
+    linear(length, pulseAlarm, 60, lightness);
 } else if (type === "exponential") {
-
     exponential(length);
 } else if (type === "solid") {
-    linear(length, solidAlarm, 1);
+    linear(length, solidAlarm, 1, lightness);
 }
 
 
@@ -241,7 +242,7 @@ function exponential(sessionLength) {
 
 
 //Note: sessionLength is changed to minutes!
-function linear(sessionLength, alarm, reminderInterval) {
+function linear(sessionLength, alarm, reminderInterval, lightness) {
     var start = moment();
     var stop = moment().add(sessionLength, 'minutes');
     var sched;
@@ -253,7 +254,7 @@ function linear(sessionLength, alarm, reminderInterval) {
     }
 
     var pulse = later.setInterval(function() {
-        alarm.onInterval(start, sessionLength, reminderInterval, pulse);
+        alarm.onInterval(start, sessionLength, lightness);
     }, sched);
 
     schedule.scheduleJob(stop.toDate(), function() {
