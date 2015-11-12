@@ -100,7 +100,12 @@ process.on('uncaughtException', exitHandler.bind(null, {
 var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
-var lightness = args[2];
+var lightness;
+if (typeof args[2]!== 'undefined')
+    lightness = args[2];
+else
+    lightness = 1;
+
 
 if (type === "linear") {
     linear(length, pulseAlarm, 60, lightness);
