@@ -244,11 +244,12 @@ function exponential(sessionLength) {
 function linear(sessionLength, alarm, reminderInterval) {
     var start = moment();
     var stop = moment().add(sessionLength, 'minutes');
-
+    var sched;
+    
     if (reminderInterval <= 60) {
-        var sched = later.parse.recur().every(reminderInterval).second();
+        sched = later.parse.recur().every(reminderInterval).second();
     } else {
-        var sched = later.parse.recur().every(Math.floor(reminderInterval/60)).minute();
+        sched = later.parse.recur().every(Math.floor(reminderInterval/60)).minute();
     }
 
     var pulse = later.setInterval(function() {
