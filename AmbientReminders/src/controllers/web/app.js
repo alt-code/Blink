@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Sets what files should be used for node js router
 app.use('/', routes);
 app.use('/aws', aws);
-app.use('/digitalocean', digitalocean)
+app.use('/digitalocean', digitalocean);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

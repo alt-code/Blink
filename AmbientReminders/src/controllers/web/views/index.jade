@@ -4,3 +4,8 @@ block content
   h1(class="headline") #{title}
   h2 Welcome to #{title}
   p A utility to spin up Apache Spark Clusters on AWS and Digital Ocean
+  
+  form(name= "Blink1", method= "post" class="horizontal")
+    div.templates
+      input(type= "submit", value= "Blink on" class="template" formaction="/Blink/on")
+      input(type= "submit", value= "Blink off" class="template" formaction="/Blink/off")
