@@ -399,12 +399,12 @@ router.post('/Blink/onBlue', function (req, res, next) {
 
 router.post('/Blink/solid', function (req, res, next) {
   res.render('index', { 'title': 'Blink1' });
-  linear(45, solidAlarm, 1, lightness);
+  linear(30, solidAlarm, 1, 1);
 });
 
 router.post('/Blink/pulse', function (req, res, next) {
   res.render('index', { 'title': 'Blink1' });
-  linear(length, pulseAlarm, 60, lightness);
+  linear(30, pulseAlarm, 60, 1);
 });
 
 module.exports = router;
