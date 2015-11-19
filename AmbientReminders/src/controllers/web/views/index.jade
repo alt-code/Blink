@@ -3,9 +3,27 @@ extends layout
 block content
   h1(class="headline") #{title}
   h2 Welcome to #{title}
-  p A utility to spin up Apache Spark Clusters on AWS and Digital Ocean
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   
-  form(name= "Blink1", method= "post" class="horizontal")
-    div.templates
-      input(type= "submit", value= "Blink on" class="template" formaction="/Blink/on")
-      input(type= "submit", value= "Blink off" class="template" formaction="/Blink/off")
+  <br/>
+  <br/>
+  <br/>
+  
+  form(name= "Blink1", method= "post" class="container-fluid")
+    div.col-xs-4
+        strong.col-md-12 Click a button to choose color: 
+        div.col-mid-12
+          input(type= "submit", value= "Red" class="btn btn-danger col-md-3" formaction="/Blink/onRed")
+          input(type= "submit", value= "Green" class="btn btn-success col-md-3" formaction="/Blink/onGreen")
+          input(type= "submit", value= "Blue" class="btn btn-primary col-md-3" formaction="/Blink/onBlue")
+          input(type= "submit", value= "Off" class="btn col-md-3" formaction="/Blink/off")
+          
+    div.col-md-4
+      strong.col-md-12 30-min pulse reminder: 
+      div.col-md-12
+        input(type= "submit", value= "Pulse" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
+    
+    div.col-xs-4
+        strong.col-md-12 30-min solid reminder: 
+        div.col-md-12
+          input(type= "submit", value= "Solid" class="btn btn-warning col-md-12" formaction="/Blink/solid")
