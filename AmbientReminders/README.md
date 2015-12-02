@@ -37,3 +37,9 @@ Creating ambient reminders for upcoming appointments.
 3. #### Change directory to src and do: 
   ```npm install```
   
+
+4. #### To get the web-server to work:
+  Change directory to `/src/controllers/web` and do
+  ```npm install```
+  and to start the local-server do the following and go to `http://localhost:5000/` in your browser:
+  ```node app.js```
