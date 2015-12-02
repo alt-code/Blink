@@ -213,6 +213,10 @@ function FastPulse(n, color, lightness, ledn) {
 //******************************** SCHEDULING **********************************↓
 // TODO:    Ranking patters
 
+//This is 'global' var to access it when the off button is pressed
+var pulse;
+var alrm;
+
 /**
  * Exponentially activates during the given sessionLength
  * @param  {int} sessionLength     sessionLength in seconds(for now - because testing)
@@ -255,6 +259,7 @@ function linear(sessionLength, alarm, reminderInterval, lightness) {
   var start = moment();
   var stop = moment().add(sessionLength, 'minutes');
   var sched;
+  alrm = alarm;
 
   if (reminderInterval <= 60) {
     sched = later.parse.recur().every(reminderInterval).second();
@@ -262,7 +267,7 @@ function linear(sessionLength, alarm, reminderInterval, lightness) {
     sched = later.parse.recur().every(Math.floor(reminderInterval / 60)).minute();
   }
 
-  var pulse = later.setInterval(function () {
+  pulse = later.setInterval(function () {
     alarm.onInterval(start, sessionLength, lightness);
   }, sched);
 
@@ -381,6 +386,8 @@ router.get('/', function (req, res, next) {
 
 
 router.post('/Blink/off', function (req, res, next) {
+  pulse.clear();
+  alrm.onEnd();
   blink1.setRGB(0, 0, 0);
   res.status(200).redirect('/');
 });
