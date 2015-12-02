@@ -381,30 +381,30 @@ router.get('/', function (req, res, next) {
 
 
 router.post('/Blink/off', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   blink1.setRGB(0, 0, 0);
+  res.status(200).redirect('/');
 });
 router.post('/Blink/onRed', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   blink1.setRGB(255, 0, 0);
+  res.status(200).redirect('/');
 });
 router.post('/Blink/onGreen', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   blink1.setRGB(0, 255, 0);
+  res.status(200).redirect('/');
 });
 router.post('/Blink/onBlue', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   blink1.setRGB(0, 0, 255);
+  res.status(200).redirect('/');
 });
 
 router.post('/Blink/solid', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   linear(30, solidAlarm, 1, 1);
+  res.status(200).redirect('/');
 });
 
 router.post('/Blink/pulse', function (req, res, next) {
-  res.render('index', { 'title': 'Blink1' });
   linear(30, pulseAlarm, 60, 1);
+  res.status(200).redirect('/');
 });
 
 module.exports = router;
