@@ -377,6 +377,15 @@ function generalGetColor(start, now, sessionLength) {
 
 //******************************** Server stuff **********************************↓
 
+//cancels active alarm; schedule, later, ...
+function cancel(){
+    if (typeof pulse !== 'undefined' && typeof schdl !== 'undefined'){
+    pulse.clear();
+    schdl.cancel();
+  }
+  blink1.setRGB(0, 0, 0);
+}
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { 'title': 'Blink1' });
@@ -384,30 +393,33 @@ router.get('/', function (req, res, next) {
 
 
 router.post('/Blink/off', function (req, res, next) {
-  pulse.clear();
-  blink1.setRGB(0, 0, 0);
-  schdl.cancel();
+  cancel();
   res.status(200).redirect('/');
 });
 router.post('/Blink/onRed', function (req, res, next) {
+  cancel();
   blink1.setRGB(255, 0, 0);
   res.status(200).redirect('/');
 });
 router.post('/Blink/onGreen', function (req, res, next) {
+  cancel();
   blink1.setRGB(0, 255, 0);
   res.status(200).redirect('/');
 });
 router.post('/Blink/onBlue', function (req, res, next) {
+  cancel();
   blink1.setRGB(0, 0, 255);
   res.status(200).redirect('/');
 });
 
 router.post('/Blink/solid', function (req, res, next) {
+  cancel();
   linear(30, solidAlarm, 1, 1);
   res.status(200).redirect('/');
 });
 
 router.post('/Blink/pulse', function (req, res, next) {
+  cancel();
   linear(30, pulseAlarm, 60, 1);
   res.status(200).redirect('/');
 });
