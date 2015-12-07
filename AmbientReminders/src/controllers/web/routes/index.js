@@ -378,8 +378,8 @@ function generalGetColor(start, now, sessionLength) {
 //******************************** Server stuff **********************************↓
 
 //cancels active alarm; schedule, later, ...
-function cancel(){
-    if (typeof pulse !== 'undefined' && typeof schdl !== 'undefined'){
+function cancel() {
+  if (typeof pulse !== 'undefined' && typeof schdl !== 'undefined') {
     pulse.clear();
     schdl.cancel();
   }
@@ -414,13 +414,23 @@ router.post('/Blink/onBlue', function (req, res, next) {
 
 router.post('/Blink/solid', function (req, res, next) {
   cancel();
-  linear(30, solidAlarm, 1, 1);
+  if (req.body.solid_sessionLength != '' && !isNaN(req.body.solid_sessionLength)) {
+    linear(parseInt(req.body.solid_sessionLength), solidAlarm, 1, 1);
+  }
+  else {
+    linear(30, solidAlarm, 1, 1);
+  }
   res.status(200).redirect('/');
 });
 
 router.post('/Blink/pulse', function (req, res, next) {
   cancel();
-  linear(30, pulseAlarm, 60, 1);
+  if (req.body.pulse_sessionLength != '' && !isNaN(req.body.pulse_sessionLength)) {
+    linear(parseInt(req.body.pulse_sessionLength), pulseAlarm, 60, 1);
+  }
+  else {
+    linear(30, pulseAlarm, 60, 1);
+  }
   res.status(200).redirect('/');
 });
 

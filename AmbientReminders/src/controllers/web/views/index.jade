@@ -7,7 +7,7 @@ block content
   
   <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
-  
+     
   <br/>
   <br/>
   <br/>
@@ -22,12 +22,13 @@ block content
           input(type= "submit", value= "Off" class="btn col-md-3" formaction="/Blink/off")
           
     div.col-md-4
-      strong.col-md-12 30-min pulse reminder: 
+      strong.col-md-12 Pulse reminder (default = 30 minutes) :  
       div.col-md-12
-        input(type= "submit", value= "Pulse" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
-    
+        input(type= "submit", value= "Pulse Alarm" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
+        input(type="text", name="pulse_sessionLength" class="col.md-12" placeholder="Pulse alarm interval")
+        
     div.col-xs-4
-        strong.col-md-12 30-min solid reminder: 
+        strong.col-md-12 Solid reminder (default = 30 minutes) : 
         div.col-md-12
-          input(type= "submit", value= "Solid" class="btn btn-warning col-md-12" formaction="/Blink/solid")
-       // input#interval(type="text", name="user" class="col.md-12" default="hi")
+          input(type= "submit", value= "Solid Alarm" class="btn btn-warning col-md-12" formaction="/Blink/solid" onclick="myFunction()")
+          input(type="text", name="solid_sessionLength" class="col.md-12" placeholder="Solid alarm interval")
