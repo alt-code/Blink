@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "fs": "0.0.2",
     "node-blink1": "^0.2.1",
+    "node-timers": "0.0.1",
     "onecolor": "^2.5.0",
     "underscore": "^1.8.3",
     "xml2js": "^0.4.12"
