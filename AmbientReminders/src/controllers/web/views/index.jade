@@ -13,22 +13,13 @@ block content
   <br/>
   
   form(name= "Blink1", method= "post" class="container-fluid")
-    div.col-xs-4
-        strong.col-md-12 Click a button to choose a color or turn off the led: 
-        div.col-mid-12
-          input(type= "submit", value= "Red" class="btn btn-danger col-md-3" formaction="/Blink/onRed")
-          input(type= "submit", value= "Green" class="btn btn-success col-md-3" formaction="/Blink/onGreen")
-          input(type= "submit", value= "Blue" class="btn btn-primary col-md-3" formaction="/Blink/onBlue")
-          input(type= "submit", value= "Off" class="btn col-md-3" formaction="/Blink/off")
+    div.col-xs-6
+      input(type= "submit", value= "Red" class="btn btn-danger col-md-12" formaction="/Blink/onRed")
+      input(type= "submit", value= "Green" class="btn btn-success col-md-12" formaction="/Blink/onGreen")
+      input(type= "submit", value= "Blue" class="btn btn-primary col-md-12" formaction="/Blink/onBlue")
+      input(type= "submit", value= "Off" class="btn col-md-12" formaction="/Blink/off")
           
-    div.col-md-4
-      strong.col-md-12 Pulse reminder (default = 30 minutes) :  
-      div.col-md-12
-        input(type= "submit", value= "Pulse Alarm" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
-        input(type="text", name="pulse_sessionLength" class="col.md-12" placeholder="Pulse alarm interval")
-        
-    div.col-xs-4
-        strong.col-md-12 Solid reminder (default = 30 minutes) : 
-        div.col-md-12
-          input(type= "submit", value= "Solid Alarm" class="btn btn-warning col-md-12" formaction="/Blink/solid" onclick="myFunction()")
-          input(type="text", name="solid_sessionLength" class="col.md-12" placeholder="Solid alarm interval")
+    div.col-xs-6
+      input(type= "submit", value= "Pulse Alarm" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
+      input(type= "submit", value= "Solid Alarm" class="btn btn-warning col-md-12" formaction="/Blink/solid" onclick="myFunction()")
+      input(type="text", name="sessionLength" class="col-md-12" placeholder="Session Length")

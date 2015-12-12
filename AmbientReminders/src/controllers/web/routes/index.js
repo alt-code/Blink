@@ -414,8 +414,8 @@ router.post('/Blink/onBlue', function (req, res, next) {
 
 router.post('/Blink/solid', function (req, res, next) {
   cancel();
-  if (req.body.solid_sessionLength != '' && !isNaN(req.body.solid_sessionLength)) {
-    linear(parseInt(req.body.solid_sessionLength), solidAlarm, 1, 1);
+  if (req.body.sessionLength != '' && !isNaN(req.body.sessionLength)) {
+    linear(parseInt(req.body.sessionLength), solidAlarm, 1, 1);
   }
   else {
     linear(30, solidAlarm, 1, 1);
@@ -425,8 +425,8 @@ router.post('/Blink/solid', function (req, res, next) {
 
 router.post('/Blink/pulse', function (req, res, next) {
   cancel();
-  if (req.body.pulse_sessionLength != '' && !isNaN(req.body.pulse_sessionLength)) {
-    linear(parseInt(req.body.pulse_sessionLength), pulseAlarm, 60, 1);
+  if (req.body.sessionLength != '' && !isNaN(req.body.sessionLength)) {
+    linear(parseInt(req.body.sessionLength), pulseAlarm, 60, 1);
   }
   else {
     linear(30, pulseAlarm, 60, 1);
