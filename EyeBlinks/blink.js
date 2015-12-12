@@ -45,27 +45,7 @@ setInterval(function ()
     else if (i == 255 && j == 255 && k < 255){ k += 5 }
 }, 100);
 */
-function findValue(xml) {
-    var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-    	if (xhttp.readyState == 4 && xhttp.status == 200) {
-    	myFunction(xhttp);
-    	}
-	}
-	xhttp.open("GET", d, true);
-	xhttp.send();
-	function myFunction(xml) {
-		var xmlDoc = xml.responseXML;
-		checkBlink(xmlDoc.getElementsByClassName('REC')[0].getAttribute('LPV'));
-	}
-}
-function checkBlink(blink){
-    if (blink == "0") {
-        blink1.setRGB(255,255,255);
-    } else {
-        blink1.setRGB(0, 0, 0);
-    }
-}
+
 
 /**
  * Simulating police car lights
