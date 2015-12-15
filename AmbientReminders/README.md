@@ -55,10 +55,10 @@ Creating ambient reminders for upcoming appointments.
   Install Microsoft Visual Studio (community/express versions are enough)
   
 2. #### Installing Node.js:
-  * For 64-bit windows download and install: [Node.js 0.11.16 64-bit](https://nodejs.org/dist/v0.11.16/x64/node-v0.11.16-x64.msi)
-* For 32-bit windows download and install: [Node.js 0.11.16 32-bit](https://nodejs.org/dist/v0.11.16/node-v0.11.16-x86.msi)
+  * For 64-bit Windows download and install: [Node.js 0.11.16 64-bit](https://nodejs.org/dist/v0.11.16/x64/node-v0.11.16-x64.msi)
+  * For 32-bit Windows download and install: [Node.js 0.11.16 32-bit](https://nodejs.org/dist/v0.11.16/node-v0.11.16-x86.msi)
 
-  You may want to add `PATH/TO/NODE-NPM` to your environment path.
+  You may want to add `PATH/TO/NODE-NPM` to your environment path (if it was not added automatically).
 
 3. #### Change directory to src and do: 
   ```npm install```
