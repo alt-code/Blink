@@ -38,8 +38,7 @@
     - [later](https://www.npmjs.com/package/later): Determine later (or previous) occurrences of recurring schedules
 
 **Plan for the future:** <br/>
-     In my free time I will be adding more features to the web server to control more settings, etc. 
-     Please add an issue for any idea on what features migth be useful to have.
+     In my free time I will be adding more features to the web server to control more settings, etc. and developing a [stand-alone blink1 npm module.] (https://github.com/alt-code/Blink/issues/37) Please add an issue for any idea on what features migth be useful to have.
      
 At the end I want to thank [Dr. Chris Parnin](http://www.chrisparnin.me/) for guiding me through this research project and helping me gain experience in the areas that I didn't have experience.
 
