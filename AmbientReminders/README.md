@@ -45,6 +45,35 @@ Creating ambient reminders for upcoming appointments.
   ```node app.js```
 
 
+
+
+
+##Instructions for installing on Windows (tested on win 7, 10):
+
+1. #### Setting up environment
+  * Seting up basic requirements:
+  Install Microsoft Visual Studio (community/express versions are enough)
+  
+2. #### Installing Node.js:
+  * For 64-bit windows download and install: [Node.js 0.11.16 64-bit](https://nodejs.org/dist/v0.11.16/x64/node-v0.11.16-x64.msi)
+* For 32-bit windows download and install: [Node.js 0.11.16 32-bit](https://nodejs.org/dist/v0.11.16/node-v0.11.16-x86.msi)
+
+  You may want to add `PATH/TO/NODE-NPM` to your environment path.
+
+3. #### Change directory to src and do: 
+  ```npm install```
+  
+4. #### To get the web-server to work:
+  Change directory to `/src/controllers/web` and do
+  ```npm install```
+  and to start the local-server do the following and go to `http://localhost:5000/` in your browser:
+  ```node app.js```
+
+
+
+
+
+
 <br/>
 <br/>
 **Whan to know more about this research project?** see: [Ambient Reminders: Final report](https://github.com/alt-code/Blink/blob/master/AmbientReminders/FinalReport.md)
