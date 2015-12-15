@@ -43,3 +43,8 @@ Creating ambient reminders for upcoming appointments.
   ```npm install```
   and to start the local-server do the following and go to `http://localhost:5000/` in your browser:
   ```node app.js```
+
+
+<br/>
+<br/>
+**Whan to know more about this research project?** see: [Ambient Reminders: Final report](https://github.com/alt-code/Blink/blob/master/AmbientReminders/FinalReport.md)
