@@ -33,7 +33,7 @@
     - Added text input for `sessionLength`.
 * **Libraries:** <br/>
     - [node-blink1](https://www.npmjs.com/package/node-blink1): A Node.js library for the blink(1).
-    - [onecolor](https://www.npmjs.com/package/onecolor)]: Javascript color object with implicit color space conversions. 
+    - [onecolor](https://www.npmjs.com/package/onecolor): Javascript color object with implicit color space conversions. 
     - [node-schedule](https://www.npmjs.com/package/node-schedule): A cron-like and not-cron-like job scheduler for Node.
     - [later](https://www.npmjs.com/package/later): Determine later (or previous) occurrences of recurring schedules
 
