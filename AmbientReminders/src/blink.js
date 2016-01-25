@@ -251,7 +251,7 @@ function linear(sessionLength, alarm, reminderInterval, lightness) {
     var start = moment();
     var stop = moment().add(sessionLength, 'minutes');
     var sched;
-    
+
     if (reminderInterval <= 60) {
         sched = later.parse.recur().every(reminderInterval).second();
     } else {
@@ -328,7 +328,7 @@ function sleep(miliSeconds) {
 /**
  * Finds out the needed color for exponential function, first 33.33% of the sessionLength Green,
  *  second 33.33% of the sessionLength Yellow, last 33.33% of the sessionLength Red
- * 
+ *
  * @param {Number} double
  * @param {int} sessionLength in seconds
  * @return {hex} color needed for linear function
@@ -349,7 +349,7 @@ function getColorExp(exp, sessionLength, count) {
  *  Finds out the needed color for all activation functions
  *  If called in linear: first 33.33% of the sessionLength Green, second 33.33% of the sessionLength Yellow, last 33.33%  of the sessionLength Red
  *  If called in exponential: the color will change exponentially from green to yellow, to red
- * 
+ *
  * @param {moment} start a moment object
  * @param {moment} now a moment object
  * @param {int} sessionLength in seconds

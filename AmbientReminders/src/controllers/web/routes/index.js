@@ -213,8 +213,6 @@ function FastPulse(n, color, lightness, ledn) {
 //******************************** SCHEDULING **********************************↓
 // TODO:    Ranking patters
 
-//This is 'global' var to access it when the off button is pressed
-var pulse;
 
 /**
  * Exponentially activates during the given sessionLength
@@ -251,7 +249,9 @@ function exponential(sessionLength) {
 }
 // exponential(10);
 
-
+//These are 'global' vars to be accessed when the off button is pressed
+var pulse;
+var schdl;
 
 //Note: sessionLength is changed to minutes!
 function linear(sessionLength, alarm, reminderInterval, lightness) {
@@ -269,7 +269,7 @@ function linear(sessionLength, alarm, reminderInterval, lightness) {
     alarm.onInterval(start, sessionLength, lightness);
   }, sched);
 
-  schedule.scheduleJob(stop.toDate(), function () {
+  schdl = schedule.scheduleJob(stop.toDate(), function () {
     pulse.clear();
     alarm.onEnd();
   });
@@ -377,6 +377,15 @@ function generalGetColor(start, now, sessionLength) {
 
 //******************************** Server stuff **********************************↓
 
+//cancels active alarm; schedule, later, ...
+function cancel() {
+  if (typeof pulse !== 'undefined' && typeof schdl !== 'undefined') {
+    pulse.clear();
+    schdl.cancel();
+  }
+  blink1.setRGB(0, 0, 0);
+}
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { 'title': 'Blink1' });
@@ -384,30 +393,44 @@ router.get('/', function (req, res, next) {
 
 
 router.post('/Blink/off', function (req, res, next) {
-  pulse.clear();
-  blink1.setRGB(0, 0, 0);
+  cancel();
   res.status(200).redirect('/');
 });
 router.post('/Blink/onRed', function (req, res, next) {
+  cancel();
   blink1.setRGB(255, 0, 0);
   res.status(200).redirect('/');
 });
 router.post('/Blink/onGreen', function (req, res, next) {
+  cancel();
   blink1.setRGB(0, 255, 0);
   res.status(200).redirect('/');
 });
 router.post('/Blink/onBlue', function (req, res, next) {
+  cancel();
   blink1.setRGB(0, 0, 255);
   res.status(200).redirect('/');
 });
 
 router.post('/Blink/solid', function (req, res, next) {
-  linear(30, solidAlarm, 1, 1);
+  cancel();
+  if (req.body.sessionLength != '' && !isNaN(req.body.sessionLength)) {
+    linear(parseInt(req.body.sessionLength), solidAlarm, 1, 1);
+  }
+  else {
+    linear(30, solidAlarm, 1, 1);
+  }
   res.status(200).redirect('/');
 });
 
 router.post('/Blink/pulse', function (req, res, next) {
-  linear(30, pulseAlarm, 60, 1);
+  cancel();
+  if (req.body.sessionLength != '' && !isNaN(req.body.sessionLength)) {
+    linear(parseInt(req.body.sessionLength), pulseAlarm, 60, 1);
+  }
+  else {
+    linear(30, pulseAlarm, 60, 1);
+  }
   res.status(200).redirect('/');
 });
 

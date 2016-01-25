@@ -7,27 +7,19 @@ block content
   
   <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
-  
+     
   <br/>
   <br/>
   <br/>
   
   form(name= "Blink1", method= "post" class="container-fluid")
-    div.col-xs-4
-        strong.col-md-12 Click a button to choose a color or turn off the led: 
-        div.col-mid-12
-          input(type= "submit", value= "Red" class="btn btn-danger col-md-3" formaction="/Blink/onRed")
-          input(type= "submit", value= "Green" class="btn btn-success col-md-3" formaction="/Blink/onGreen")
-          input(type= "submit", value= "Blue" class="btn btn-primary col-md-3" formaction="/Blink/onBlue")
-          input(type= "submit", value= "Off" class="btn col-md-3" formaction="/Blink/off")
+    div.col-xs-6
+      input(type= "submit", value= "Red" class="btn btn-danger col-md-12" formaction="/Blink/onRed")
+      input(type= "submit", value= "Green" class="btn btn-success col-md-12" formaction="/Blink/onGreen")
+      input(type= "submit", value= "Blue" class="btn btn-primary col-md-12" formaction="/Blink/onBlue")
+      input(type= "submit", value= "Off" class="btn col-md-12" formaction="/Blink/off")
           
-    div.col-md-4
-      strong.col-md-12 30-min pulse reminder: 
-      div.col-md-12
-        input(type= "submit", value= "Pulse" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
-    
-    div.col-xs-4
-        strong.col-md-12 30-min solid reminder: 
-        div.col-md-12
-          input(type= "submit", value= "Solid" class="btn btn-warning col-md-12" formaction="/Blink/solid")
-       // input#interval(type="text", name="user" class="col.md-12" default="hi")
+    div.col-xs-6
+      input(type= "submit", value= "Pulse Alarm" class="btn btn-warning col-md-12" formaction="/Blink/pulse")
+      input(type= "submit", value= "Solid Alarm" class="btn btn-warning col-md-12" formaction="/Blink/solid" onclick="myFunction()")
+      input(type="text", name="sessionLength" class="col-md-12" placeholder="Session Length")

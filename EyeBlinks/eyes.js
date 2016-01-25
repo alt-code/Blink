@@ -1,6 +1,11 @@
-var blink = require('./blink.js')
+//var blink = require('./blink.js')
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({trim: true});
+var Blink1 = require('node-blink1');
+var blink1 = new Blink1();
+blink1.version(function(v) {
+    console.log("Found blink1 with version", v);
+});
 //blink.policeCar();
 
 
@@ -43,10 +48,24 @@ s.on('data', function(d){
 
     //console.log(d.toString());
 	parser.parseString(d, function(err, data) {
-		console.log(data.REC.$.LPV);
-	})
+
+        if( data.REC && data.REC.hasOwnProperty("$") )
+        {
+            var x = data.REC.$.LPV;
+			console.log(x);
+			checkBlink(x);
+        }
+        //console.log(data.REC["$"].LPV);
+    })
 
 });
+function checkBlink(y){
+    if (y === "0") {
+        blink1.setRGB(255,255,255);
+    } else {
+        blink1.setRGB(0, 0, 0);
+    }
+}
 
 s.on('error', function(error){
     console.log(error());
