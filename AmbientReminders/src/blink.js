@@ -35,7 +35,7 @@ var palette = {
 
 // create blink(1) object without serial number, uses first device:
 var blink1 = new Blink1();
-blink1.version(function(v) {
+blink1.version(function (v) {
     console.log("Found blink1 with version", v);
 });
 
@@ -47,14 +47,14 @@ function exitHandler(options, err) {
     } else {
         console.log("closing");
         blink1.setRGB(0, 0, 0, function () {
-           process.exit();
+            process.exit();
         });
         process.exit();
     }
 }
 
 var solidAlarm = {
-    onInterval: function(start, sessionLength, lightness) {
+    onInterval: function (start, sessionLength, lightness) {
         console.log(new Date());
         var myColor = hexToR_G_B(Lightnen(generalGetColor(start, moment(), sessionLength * 60), lightness));
         var r = myColor[0];
@@ -62,19 +62,19 @@ var solidAlarm = {
         var b = myColor[2];
         blink1.setRGB(r, g, b);
     },
-    onEnd: function() {
+    onEnd: function () {
         policeCar(5);
         blink1.setRGB(0, 0, 0);
     }
 };
 
 var pulseAlarm = {
-    onInterval: function(start, sessionLength, lightness) {
+    onInterval: function (start, sessionLength, lightness) {
         console.log(new Date());
         Flashes(1, 1000, generalGetColor(start, moment(), sessionLength * 60), lightness);
     },
-    onEnd: function() {
-        blink1.setRGB(255, 0, 0, function() {
+    onEnd: function () {
+        blink1.setRGB(255, 0, 0, function () {
             blink1.fadeToRGB(10000, 0, 0, 0);
         });
     }
@@ -101,7 +101,7 @@ var args = process.argv.slice(2);
 var type = args[0];
 var length = args[1];
 var lightness;
-if (typeof args[2]!== 'undefined')
+if (typeof args[2] !== 'undefined')
     lightness = args[2];
 else
     lightness = 1;
@@ -126,7 +126,7 @@ function policeCar(sessionLength) {
     var r = 255;
     var b = 0;
     var rbbr = "rb";
-    var pulse = setInterval(function() {
+    var pulse = setInterval(function () {
         //blink1.fadeToRGB(10, r, 0, b);
         blink1.setRGB(r, 0, b);
         if (rbbr === "rb") {
@@ -145,7 +145,7 @@ function policeCar(sessionLength) {
     }, 100);
 
     var now = moment();
-    schedule.scheduleJob(now.add(sessionLength, 's').toDate(), function() {
+    schedule.scheduleJob(now.add(sessionLength, 's').toDate(), function () {
         clearInterval(pulse);
         blink1.setRGB(0, 0, 0);
     });
@@ -172,8 +172,8 @@ function Flashes(n, fadeMillis, color, lightness, ledn) {
     if (n === 0) //base case
         return;
 
-    blink1.fadeToRGB(fadeMillis, r, g, b, ledn, function() {
-        blink1.fadeToRGB(fadeMillis, 0, 0, 0, ledn, function() {
+    blink1.fadeToRGB(fadeMillis, r, g, b, ledn, function () {
+        blink1.fadeToRGB(fadeMillis, 0, 0, 0, ledn, function () {
             Flashes(n - 1, fadeMillis, color, lightness, ledn);
         });
     });
@@ -225,7 +225,7 @@ function exponential(sessionLength) {
         now.add(sessionLength - Math.floor(exp), 's');
         count -= 1;
 
-        schedule.scheduleJob(now.toDate(), function() {
+        schedule.scheduleJob(now.toDate(), function () {
             Flashes(2, 200, generalGetColor(start, moment(), sessionLength), 1);
             // Flashes(2, 200, getColorExp(1.1, sessionLength, count), 1);
             console.log("Hi there!" + " Color: " + generalGetColor(start, moment(), sessionLength));
@@ -235,9 +235,9 @@ function exponential(sessionLength) {
         console.log("Pulse at: " + now.toDate() + " Color: " + generalGetColor(start, now, sessionLength));
     }
 
-    schedule.scheduleJob(end.toDate(), function() {
+    schedule.scheduleJob(end.toDate(), function () {
         // policeCar(5);        //I think this would work as well
-        blink1.setRGB(255, 0, 0, function() {
+        blink1.setRGB(255, 0, 0, function () {
             blink1.fadeToRGB(5000, 0, 0, 0);
         });
     });
@@ -255,14 +255,14 @@ function linear(sessionLength, alarm, reminderInterval, lightness) {
     if (reminderInterval <= 60) {
         sched = later.parse.recur().every(reminderInterval).second();
     } else {
-        sched = later.parse.recur().every(Math.floor(reminderInterval/60)).minute();
+        sched = later.parse.recur().every(Math.floor(reminderInterval / 60)).minute();
     }
 
-    var pulse = later.setInterval(function() {
+    var pulse = later.setInterval(function () {
         alarm.onInterval(start, sessionLength, lightness);
     }, sched);
 
-    schedule.scheduleJob(stop.toDate(), function() {
+    schedule.scheduleJob(stop.toDate(), function () {
         pulse.clear();
         alarm.onEnd();
     });
@@ -318,9 +318,9 @@ function randomInt(low, high) {
  * @param  {Number} miliSeconds length of pause
  */
 function sleep(miliSeconds) {
-    return function() {
+    return function () {
         var currentTime = new Date().getTime();
-        while (currentTime + miliSeconds >= new Date().getTime()) {}
+        while (currentTime + miliSeconds >= new Date().getTime()) { }
     }
 }
 
@@ -367,3 +367,19 @@ function generalGetColor(start, now, sessionLength) {
 
 
 //******************************** Testing **********************************↓
+
+function pomodoro(lightness) {
+    linear(25, solidAlarm, 1, lightness);
+
+}
+
+function pomodoroT(lightness) {
+    var sched = later.parse.recur().every(30).second();
+
+    var pulse = later.setInterval(function () {
+        pomodoro(lightness);
+    }, sched);
+    
+}
+
+pomodoroT(1);
