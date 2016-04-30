@@ -69,9 +69,17 @@ Creating ambient reminders for upcoming appointments.
   and to start the local-server do the following and go to `http://localhost:5000/` in your browser:
   ```node app.js```
 
+<br/>
 
-
-
+####Command line arguments:
+1. Type: 
+     * `--solid`  or `-s`
+     * `--linear` or `-l`
+     * `--exponential` or `-e`
+2. Length:
+     * `--length 10` (in minutes)
+3. Lightness (optional): 
+     * `--lightness 0.7`
 
 
 <br/>
