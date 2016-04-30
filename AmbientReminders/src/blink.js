@@ -382,4 +382,4 @@ function pomodoroT(lightness) {
     
 }
 
-pomodoroT(1);
+//pomodoroT(1);
