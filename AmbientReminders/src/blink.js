@@ -3,6 +3,7 @@ var color = require('onecolor');
 var moment = require('moment');
 var schedule = require('node-schedule');
 var later = require("later");
+var commandLineArgs = require('command-line-args');
 
 /**
  * onecolor usage example:
@@ -97,24 +98,36 @@ process.on('uncaughtException', exitHandler.bind(null, {
     exit: true
 }));
 
-var args = process.argv.slice(2);
-var type = args[0];
-var length = args[1];
+
+const cli = commandLineArgs([{
+    name: 'solid',
+    alias: 's',
+    type: Boolean
+}, {
+    name: 'linear',
+    alias: 'l',
+    type: Boolean
+}, {
+    name: 'exponential',
+    alias: 'e',
+    type: Boolean
+}, {
+    name: 'length',
+    type: Number
+}, {
+    name: 'lightness',
+    type: Number
+}]);
+const options = cli.parse();
+
 var lightness;
-if (typeof args[2] !== 'undefined')
-    lightness = args[2];
-else
-    lightness = 1;
-
-
-if (type === "linear") {
-    linear(length, pulseAlarm, 60, lightness);
-} else if (type === "exponential") {
-    exponential(length);
-} else if (type === "solid") {
-    linear(length, solidAlarm, 1, lightness);
-}
-
+options.lightness != undefined ? lightness = options.lightness : lightness = 1;
+if(options.solid)
+    linear(options.length, solidAlarm, 1, lightness);
+else if(options.linear)
+    linear(options.length, pulseAlarm, 60, lightness);
+else if(options.exponential)
+    exponential(options.length);
 
 
 //******************************** PATTERS **********************************↓
@@ -381,5 +394,3 @@ function pomodoroT(lightness) {
     }, sched);
     
 }
-
-pomodoroT(1);
