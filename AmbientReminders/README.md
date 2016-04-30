@@ -25,14 +25,14 @@ Creating ambient reminders for upcoming appointments.
   curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
   source ~/.profile
   nvm ls-remote
-  nvm install v0.11.16
-  nvm use 0.11.16
+  nvm install v0.12.0
+  nvm use 0.12.0
   node -v
   # See where installed
   which node 
   ```
 
-  You may want to add `nvm use 0.11.16` add the end of your .bashrc/.profile
+  You may want to add `nvm use 0.12.0` add the end of your .bashrc/.profile
 
 3. #### Change directory to src and do: 
   ```npm install```
@@ -55,8 +55,8 @@ Creating ambient reminders for upcoming appointments.
   Install Microsoft Visual Studio (community/express versions are enough)
   
 2. #### Installing Node.js:
-  * For 64-bit Windows download and install: [Node.js 0.11.16 64-bit](https://nodejs.org/dist/v0.11.16/x64/node-v0.11.16-x64.msi)
-  * For 32-bit Windows download and install: [Node.js 0.11.16 32-bit](https://nodejs.org/dist/v0.11.16/node-v0.11.16-x86.msi)
+  * For 64-bit Windows download and install: [Node.js 0.12.0 64-bit](https://nodejs.org/dist/v0.11.16/x64/node-v0.11.16-x64.msi)
+  * For 32-bit Windows download and install: [Node.js 0.12.0 32-bit](https://nodejs.org/dist/v0.12.0/node-v0.12.0-x86.msi)
 
   You may want to add `PATH/TO/NODE-NPM` to your environment path (if it was not added automatically).
 
