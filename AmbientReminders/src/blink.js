@@ -112,6 +112,10 @@ const cli = commandLineArgs([{
     alias: 'e',
     type: Boolean
 }, {
+    name: 'pomodoro',
+    alias: 'p',
+    type: Boolean
+}, {
     name: 'length',
     type: Number
 }, {
@@ -128,6 +132,8 @@ else if(options.linear)
     linear(options.length, pulseAlarm, 60, lightness);
 else if(options.exponential)
     exponential(options.length);
+else if(options.pomodoro)
+    pomodoro(lightness)
 
 
 //******************************** PATTERS **********************************↓
@@ -383,7 +389,6 @@ function generalGetColor(start, now, sessionLength) {
 
 function pomodoro(lightness) {
     linear(25, solidAlarm, 1, lightness);
-
 }
 
 function pomodoroT(lightness) {
@@ -392,5 +397,4 @@ function pomodoroT(lightness) {
     var pulse = later.setInterval(function () {
         pomodoro(lightness);
     }, sched);
-    
 }
