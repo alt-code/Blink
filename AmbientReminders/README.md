@@ -80,6 +80,9 @@ Creating ambient reminders for upcoming appointments.
      * `--length 10` (in minutes)
 3. Lightness (optional): 
      * `--lightness 0.7`
+4. Pomodoro (25 min linear session):
+     * `--pomodoro` or `-p`
+     * Ticking sound: `--tick` or `-t`
 
 
 <br/>
