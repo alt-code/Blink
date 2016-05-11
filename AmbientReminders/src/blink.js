@@ -4,6 +4,9 @@ var moment = require('moment');
 var schedule = require('node-schedule');
 var later = require("later");
 var commandLineArgs = require('command-line-args');
+var fs = require('fs');
+var lame = require('lame');
+var Speaker = require('speaker');
 
 /**
  * onecolor usage example:
@@ -392,29 +395,14 @@ function generalGetColor(start, now, sessionLength) {
 //******************************** Testing **********************************↓
 
 function pomodoro(lightness) {
-
     if(options.tick){
-        var edge = require('edge');
-
-        var play = edge.func(function() {/*
-            async (input) => {
-                return await Task.Run<object>(async () => {
-                    var player = new System.Media.SoundPlayer((string)input);
-                    player.PlaySync();
-                    return null;
-                });
-            }
-        */});
-
-        console.log('Starting playing');
-        play('./assets/pomodoroTimer.wav', function (err) {
-            if (err) throw err;
-            console.log('Done playing');
-        });
-        console.log('Started playing');
+        fs.createReadStream("./assets/pomodoroTimer.mp3")
+          .pipe(new lame.Decoder())
+          .on('format', function (format) {
+            this.pipe(new Speaker(format));
+          });
     }
     linear(25, solidAlarm, 1, lightness);
-
 }
 
 function pomodoroT(lightness) {
