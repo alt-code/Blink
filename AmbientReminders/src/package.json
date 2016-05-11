@@ -21,7 +21,8 @@
     "underscore": "^1.8.3",
     "node-schedule": "^0.2.9",
     "later": "^1.2.0",
-    "command-line-args": "2.1.6"
+    "command-line-args": "2.1.6",
+    "edge": "5.0.0"
   },
   "engines" : { "node" : ">=0.11.6" }
 }

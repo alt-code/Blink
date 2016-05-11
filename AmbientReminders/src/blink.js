@@ -116,6 +116,10 @@ const cli = commandLineArgs([{
     alias: 'p',
     type: Boolean
 }, {
+    name: 'tick',
+    alias: 't',
+    type: Boolean
+}, {
     name: 'length',
     type: Number
 }, {
@@ -388,7 +392,29 @@ function generalGetColor(start, now, sessionLength) {
 //******************************** Testing **********************************↓
 
 function pomodoro(lightness) {
+
+    if(options.tick){
+        var edge = require('edge');
+
+        var play = edge.func(function() {/*
+            async (input) => {
+                return await Task.Run<object>(async () => {
+                    var player = new System.Media.SoundPlayer((string)input);
+                    player.PlaySync();
+                    return null;
+                });
+            }
+        */});
+
+        console.log('Starting playing');
+        play('./assets/pomodoroTimer.wav', function (err) {
+            if (err) throw err;
+            console.log('Done playing');
+        });
+        console.log('Started playing');
+    }
     linear(25, solidAlarm, 1, lightness);
+
 }
 
 function pomodoroT(lightness) {
